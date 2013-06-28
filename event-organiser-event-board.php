@@ -1,0 +1,179 @@
+<?php
+/*
+ Plugin Name: Event Organiser Event Board
+Plugin URI: http://www.wp-event-organiser.com
+Version: 0.1
+Description: Display events in as a responsive board
+Author: Stephen Harris
+Author URI: http://www.stephenharris.info
+*/
+/*  Copyright 2013 Stephen Harris (contact@stephenharris.info)
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
+*/
+//TODO Tidy up
+//Filter query?
+//Remove 'Show more' when there are no more results
+//Cache
+//Fix delay on item alignmens
+
+define( 'EVENT_ORGANISER_EVENT_BOARD_DIR',plugin_dir_path(__FILE__ ));
+function _eventorganiser_event_board_set_constants(){
+	/*
+	 * Defines the plug-in directory url
+	* <code>url:http://mysite.com/wp-content/plugins/event-organiser-pro</code>
+	*/
+	define( 'EVENT_ORGANISER_EVENT_BOARD_URL',plugin_dir_url(__FILE__ ));
+}
+add_action( 'after_setup_theme', '_eventorganiser_event_board_set_constants' );
+
+
+function eventorganiser_event_board_register_stack( $stacks ){
+	$stacks[] = EVENT_ORGANISER_EVENT_BOARD_DIR . 'templates';
+	return $stacks;
+}
+add_filter( 'eventorganiser_template_stack', 'eventorganiser_event_board_register_stack' );
+
+
+function eventorganiser_event_board_shortcode_handler( $atts ){
+	
+	$atts = shortcode_atts(array(
+				'filters' => "",
+			), $atts);
+	
+	//Get template
+	ob_start();
+	eo_locate_template( 'single-event-board-item.html', true, false );
+	$template = ob_get_contents();
+	ob_end_clean();
+	
+	//Load & 'localize' script
+	$ext = (defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG) ? '' : '.min';
+	wp_enqueue_script( 'eo-event-board', EVENT_ORGANISER_EVENT_BOARD_URL."js/event-board{$ext}.js", array( 'jquery', 'jquery-masonry' ) );
+	wp_enqueue_style( 'eo-event-board', EVENT_ORGANISER_EVENT_BOARD_URL.'css/event-board.css' );
+	wp_localize_script( 'eo-event-board', 'eventorganiser_event_board',
+		array(
+			'url' => admin_url( 'admin-ajax.php' ),
+			'loading' => __( 'Loading...', 'eventorganiser' ),
+			'load_more' => __( 'Load more', 'eventorganiser' ),
+			'template' => $template
+		));
+	
+	
+	//Handle filters
+	
+	$venues = eo_get_venues();
+	$cats = get_terms( array('event-category'), array('hide_empty'=> false ) );
+	
+	$filters = explode(',', $atts['filters']);
+	$filers_markup = '';
+	
+	if( $filters ):
+	
+	foreach( $filters as $filter ){
+		
+		switch( trim( $filter ) ):
+	
+			case 'venue':
+				
+				if( $venues ){
+					foreach( $venues as $venue ){
+			
+						$filers_markup .= sprintf(
+								'<a href="#" class="event-board-filter filter-venue filter-venue-%1$d" data-filter-type="venue" data-venue="%1$d" data-filter-on="false">%2$s</a>',
+								$venue->term_id,
+								$venue->name
+							);
+					}		
+				}
+			break;
+		
+			case 'category':
+				if( $cats ){
+					foreach( $cats as $cat ){
+						$filers_markup .= sprintf(
+							'<a href="#" class="event-board-filter filter-category filter-category-%1$d" data-filter-type="category" data-category="%1$d" data-filter-on="false">%2$s</a>',
+							$cat->term_id,
+							$cat->name
+						);
+					}
+				}
+				$filers_markup .= sprintf(
+					'<a href="#" class="event-board-filter filter-category filter-category-%1$d" data-filter-type="category" data-category="%1$d" data-filter-on="false">%2$s</a>',
+					0,
+					__('Uncategorised')
+				);
+			break;
+		endswitch;
+	}
+	endif;
+	
+	return
+		'<div id="event-board">' 
+			.'<div id="event-board-filters" data-filters="">'. $filers_markup . '</div>'  
+			.'<div id="event-board-items"></div>
+			.<div id="event-board-more"></div>'
+		.'</div>';
+}
+add_shortcode( 'event_board', 'eventorganiser_event_board_shortcode_handler' );
+
+
+function eventorganiser_event_boad_ajax_response(){
+
+	$page = $_GET['page'];
+	$event_query = new WP_Query( array(
+			'post_type' => 'event',
+			'event_start_after' => 'today',
+			'numberposts' => 10,
+			'paged' => $page,
+	));
+
+	$response = array();
+	if( $event_query->have_posts() ){
+		while( $event_query->have_posts() ){
+			$event_query->the_post();
+			$start_format = get_option( 'time_format' );
+			if( eo_get_the_start( 'Y-m-d' ) == eo_get_the_end( 'Y-m-d' )  ){
+				$end_format = get_option( 'time_format' );
+			}else{
+				$end_format = 'j M '.get_option( 'time_format' );
+			}
+			$venue_id = eo_get_venue();
+			$categories = get_the_terms( get_the_ID(), 'event-category' );
+			$colour = ( eo_get_event_color() ? eo_get_event_color() : '#1e8cbe' );
+			$response[] = array(
+					'event_title' => get_the_title( ),
+					'event_color' => $colour,
+					'event_color_light' => eo_color_luminance( $colour, 0.3 ),
+					'event_start_day' => eo_get_the_start( 'j'),
+					'event_start_month' => eo_get_the_start( 'M' ),
+					'event_content' => get_the_excerpt(),
+					'event_thumbnail' => get_the_post_thumbnail( get_the_ID(), array( '200', '200' ), array( 'class' => 'aligncenter' ) ),
+					'event_permalink' => get_permalink(),
+					'event_categories' => get_the_term_list( get_the_ID(),'event-category', '#', ', #', '' ),
+					'event_venue' => ( $venue_id ? eo_get_venue_name( $venue_id ) : false ),
+					'event_venue_id' => $venue_id,
+					'event_venue_url' => ( $venue_id ? eo_get_venue_link( $venue_id ) : false ),
+					'event_is_all_day' => eo_is_all_day(),
+					'event_cat_ids' =>  $categories ? array_values( wp_list_pluck( $categories, 'term_id' ) ) : array( 0 ), 
+					'event_range' => eo_get_the_start( $start_format ) . ' - ' . eo_get_the_end( $end_format ),
+			);
+		}
+	}
+
+	echo json_encode($response);
+	exit();
+}
+add_action( 'wp_ajax_event_board', 'eventorganiser_event_boad_ajax_response' );

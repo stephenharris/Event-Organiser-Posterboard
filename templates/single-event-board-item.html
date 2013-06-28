@@ -1,0 +1,33 @@
+<div class="event-box venue-<%=event_venue_id%> category-<%= event_cat_ids.join(' category-') %>" data-venue="<%=event_venue_id%>" data-category="<% event_cat_ids.join(',') %>">
+
+	<div class="eo-date-container">
+		<span class="eo-date-month" style="background-color: <%=event_color%>;"><%=event_start_month%></span>
+		<span class="eo-date-day" style="background: <%=event_color_light%>;"><%=event_start_day%></span>
+	</div>
+
+	<div class="eo-event-meta-container">
+		<span class="eo-event-title"><a href="<%=event_permalink%>"><%=event_title%></a></span>
+
+		<% if( event_venue ){ %>
+			<span class="eo-event-meta"> @ <em><a href="<%=event_venue_url%>"><%=event_venue%></a></em> </span>
+		<% } %>
+
+		<% if( event_is_all_day == false ){ %>
+			<span class="eo-event-meta"> <%=event_range%> </span>
+		<% } %>
+	</div>
+
+	<div style="clear:both"></div>
+		
+	<div>
+		<%=event_thumbnail%>
+	</div>
+			
+	<%=event_content%>
+			
+	
+	<% if( event_categories ){ %>
+		<p class="eo-event-meta"><%=event_categories%></p>
+	<% } %>
+			
+</div>
