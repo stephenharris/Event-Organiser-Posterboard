@@ -81,7 +81,9 @@ function eventorganiser_event_board_shortcode_handler( $atts ){
 	
 	foreach( $filters as $filter ){
 		
-		switch( trim( $filter ) ):
+		$filter = strtolower( trim( $filter ) );
+		
+		switch( $filter ):
 	
 			case 'venue':
 				if( $venues ){
