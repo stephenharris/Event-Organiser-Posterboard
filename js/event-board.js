@@ -157,7 +157,6 @@ jQuery(document).ready(function ($) {
 	var $container = $('#event-board-items');
 	var width = $container.parent().width();
 	var columnWidth = Math.floor((width -3*2*2*10)/3);
-	//$container.find('.event-box').css({'width':columnWidth});
 
 	$('#event-board-more').text( eventorganiser_event_board.loading );
 	var page = 1;
@@ -220,8 +219,24 @@ jQuery(document).ready(function ($) {
     				var template = eventorganiser_event_board.template;
     				html += event_board_template( event );
     			}
+    			if( events.length < 10 )
+    				$('#event-board-more').hide();
+    			
     			var $box = $(html);
+
+    			var activeFilters = $('#event-board-filters').data('filters').split(',');
+    			if( activeFilters.length == 1 && activeFilters[0] == "" )
+    				activeFilters = [];
+
     			$container.append( $box ).masonry( 'appended', $box, true );
+    			
+    			if( activeFilters.length > 0 ){
+    				var select = '#event-board .'+activeFilters.join(', #event-board .');
+    				$( select )
+    					.css({'visibility': 'hidden', 'display': 'none'})
+    					.removeClass("event-box masonry-brick masonry-brick")
+    					.addClass('event-box-hidden');
+    			}
     			$(window).trigger('resize');
     	    });
     }
