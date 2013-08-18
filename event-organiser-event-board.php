@@ -23,11 +23,6 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 */
-//TODO Tidy up
-//Filter query?
-//Remove 'Show more' when there are no more results
-//Cache
-//Fix delay on item alignmens
 
 define( 'EVENT_ORGANISER_EVENT_BOARD_DIR',plugin_dir_path(__FILE__ ));
 function _eventorganiser_event_board_set_constants(){
@@ -61,9 +56,9 @@ function eventorganiser_event_board_shortcode_handler( $atts ){
 	
 	//Load & 'localize' script
 	$ext = (defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG) ? '' : '.min';
-	wp_enqueue_script( 'eo-event-board', EVENT_ORGANISER_EVENT_BOARD_URL."js/event-board{$ext}.js", array( 'jquery', 'jquery-masonry' ) );
-	wp_enqueue_style( 'eo-event-board', EVENT_ORGANISER_EVENT_BOARD_URL.'css/event-board.css' );
-	wp_localize_script( 'eo-event-board', 'eventorganiser_event_board',
+	wp_enqueue_script( 'eo_event_board', EVENT_ORGANISER_EVENT_BOARD_URL."js/event-board{$ext}.js", array( 'jquery', 'jquery-masonry' ) );
+	wp_enqueue_style( 'eo_event_board', EVENT_ORGANISER_EVENT_BOARD_URL.'css/event-board.css' );
+	wp_localize_script( 'eo_event_board', 'eventorganiser_event_board',
 		array(
 			'url' => admin_url( 'admin-ajax.php' ),
 			'loading' => __( 'Loading...', 'eventorganiser' ),
@@ -72,13 +67,15 @@ function eventorganiser_event_board_shortcode_handler( $atts ){
 		));
 	
 	
-	//Handle filters
+	//Handle filters	
+	$filters = explode(',', $atts['filters']);
+	$filers_markup = '';
 	
 	$venues = eo_get_venues();
 	$cats = get_terms( array('event-category'), array('hide_empty'=> false ) );
-	
-	$filters = explode(',', $atts['filters']);
-	$filers_markup = '';
+
+	//'state'/'country'/'city' functions only available in Pro
+	$is_pro_active = in_array( 'event-organiser-pro/event-organiser-pro.php', (array) get_option( 'active_plugins', array() ) );
 	
 	if( $filters ):
 	
@@ -87,7 +84,6 @@ function eventorganiser_event_board_shortcode_handler( $atts ){
 		switch( trim( $filter ) ):
 	
 			case 'venue':
-				
 				if( $venues ){
 					foreach( $venues as $venue ){
 			
@@ -115,6 +111,33 @@ function eventorganiser_event_board_shortcode_handler( $atts ){
 					0,
 					__('Uncategorised')
 				);
+			break;
+			
+			case 'city':
+			case 'state':
+			case 'country':
+				
+				//If Pro isn't active, this won't work
+				if( !$is_pro_active )
+					break;
+				
+				if( 'city' == $filter ){
+					$terms = eo_get_venue_cities();
+				}elseif( 'state' == $filter ){
+					$terms = eo_get_venue_states();
+				}else{
+					$terms  = eo_get_venue_countries();
+				}
+				
+				if( $terms ){
+					foreach( $terms as $term ){
+						$filers_markup .= sprintf(
+							'<a href="#" class="event-board-filter filter-%1$s filter-%1$s-%2$s" data-filter-type="%1$s" data-%1$s="%2$s" data-filter-on="false">%2$s</a>',
+							$filter,
+							$term
+						);
+					}						
+				}
 			break;
 		endswitch;
 	}
@@ -153,6 +176,7 @@ function eventorganiser_event_boad_ajax_response(){
 			$venue_id = eo_get_venue();
 			$categories = get_the_terms( get_the_ID(), 'event-category' );
 			$colour = ( eo_get_event_color() ? eo_get_event_color() : '#1e8cbe' );
+			$address = eo_get_venue_address( $venue_id );
 			$response[] = array(
 					'event_title' => get_the_title( ),
 					'event_color' => $colour,
@@ -165,6 +189,9 @@ function eventorganiser_event_boad_ajax_response(){
 					'event_categories' => get_the_term_list( get_the_ID(),'event-category', '#', ', #', '' ),
 					'event_venue' => ( $venue_id ? eo_get_venue_name( $venue_id ) : false ),
 					'event_venue_id' => $venue_id,
+					'event_venue_city' => ( $venue_id ? $address['city'] : false ),
+					'event_venue_state' => ( $venue_id ? $address['state'] : false ),
+					'event_venue_country' => ( $venue_id ? $address['country'] : false ),
 					'event_venue_url' => ( $venue_id ? eo_get_venue_link( $venue_id ) : false ),
 					'event_is_all_day' => eo_is_all_day(),
 					'event_cat_ids' =>  $categories ? array_values( wp_list_pluck( $categories, 'term_id' ) ) : array( 0 ), 
