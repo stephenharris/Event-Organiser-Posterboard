@@ -3,8 +3,6 @@
 .settings
 .buildpath
 .metadata
-compiler.jar
-dist
-externs.js
-externs-venue.js
-Makefile
+build
+node_modules
+/.aws.json
