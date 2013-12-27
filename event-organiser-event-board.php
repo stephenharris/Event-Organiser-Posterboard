@@ -167,19 +167,28 @@ function eventorganiser_event_boad_ajax_response(){
 
 	$response = array();
 	if( $event_query->have_posts() ){
+		
+		global $post;
+		
 		while( $event_query->have_posts() ){
+			
 			$event_query->the_post();
 			$start_format = get_option( 'time_format' );
+			
 			if( eo_get_the_start( 'Y-m-d' ) == eo_get_the_end( 'Y-m-d' )  ){
 				$end_format = get_option( 'time_format' );
 			}else{
 				$end_format = 'j M '.get_option( 'time_format' );
 			}
+			
 			$venue_id = eo_get_venue();
 			$categories = get_the_terms( get_the_ID(), 'event-category' );
 			$colour = ( eo_get_event_color() ? eo_get_event_color() : '#1e8cbe' );
 			$address = eo_get_venue_address( $venue_id );
-			$response[] = array(
+			
+			$event = array(
+					'event_id' => get_the_ID(),
+					'occurrence_id' => $post->occurrence_id,
 					'event_title' => get_the_title( ),
 					'event_color' => $colour,
 					'event_color_light' => eo_color_luminance( $colour, 0.3 ),
@@ -199,9 +208,14 @@ function eventorganiser_event_boad_ajax_response(){
 					'event_cat_ids' =>  $categories ? array_values( wp_list_pluck( $categories, 'term_id' ) ) : array( 0 ), 
 					'event_range' => eo_get_the_start( $start_format ) . ' - ' . eo_get_the_end( $end_format ),
 			);
+			
+			$event = apply_filters( 'eventorganiser_event_board_item', $event, $event['event_id'], $event['occurrence_id'] );
+			$response[] = $event;
 		}
 	}
 
+	wp_reset_postdata();
+	
 	echo json_encode($response);
 	exit();
 }
