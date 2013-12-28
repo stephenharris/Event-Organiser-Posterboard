@@ -1,11 +1,15 @@
 <?php
 /*
- Plugin Name: Event Organiser Event Posterboard
+Plugin Name: Event Organiser Posterboard
 Plugin URI: http://www.wp-event-organiser.com
-Version: 0.2
-Description: Display events in as a responsive board
+Version: 0.3.0
+Description: Display events in as a responsive posterboard.
 Author: Stephen Harris
 Author URI: http://www.stephenharris.info
+Text Domain: event-organiser-posterboard
+Domain Path: /languages
+
+
 */
 /*  Copyright 2013 Stephen Harris (contact@stephenharris.info)
 
@@ -24,25 +28,25 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 */
 
-define( 'EVENT_ORGANISER_EVENT_BOARD_DIR',plugin_dir_path(__FILE__ ));
-function _eventorganiser_event_board_set_constants(){
+define( 'EVENT_ORGANISER_POSTERBOARD_DIR',plugin_dir_path(__FILE__ ));
+function _eventorganiser_posterboard_set_constants(){
 	/*
 	 * Defines the plug-in directory url
-	* <code>url:http://mysite.com/wp-content/plugins/event-organiser-pro</code>
+	* <code>url:http://mysite.com/wp-content/plugins/event-organiser-posterboard</code>
 	*/
-	define( 'EVENT_ORGANISER_EVENT_BOARD_URL',plugin_dir_url(__FILE__ ));
+	define( 'EVENT_ORGANISER_POSTERBOARD_URL',plugin_dir_url(__FILE__ ));
 }
-add_action( 'after_setup_theme', '_eventorganiser_event_board_set_constants' );
+add_action( 'after_setup_theme', '_eventorganiser_posterboard_set_constants' );
 
 
-function eventorganiser_event_board_register_stack( $stacks ){
-	$stacks[] = EVENT_ORGANISER_EVENT_BOARD_DIR . 'templates';
+function eventorganiser_posterboard_register_stack( $stacks ){
+	$stacks[] = EVENT_ORGANISER_POSTERBOARD_DIR . 'templates';
 	return $stacks;
 }
-add_filter( 'eventorganiser_template_stack', 'eventorganiser_event_board_register_stack' );
+add_filter( 'eventorganiser_template_stack', 'eventorganiser_posterboard_register_stack' );
 
 
-function eventorganiser_event_board_shortcode_handler( $atts ){
+function eventorganiser_posterboard_shortcode_handler( $atts ){
 	
 	$atts = shortcode_atts(array(
 				'filters' => "",
@@ -56,9 +60,9 @@ function eventorganiser_event_board_shortcode_handler( $atts ){
 	
 	//Load & 'localize' script
 	$ext = (defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG) ? '' : '.min';
-	wp_enqueue_script( 'eo_event_board', EVENT_ORGANISER_EVENT_BOARD_URL."js/event-board{$ext}.js", array( 'jquery', 'jquery-masonry' ) );
-	wp_enqueue_style( 'eo_event_board', EVENT_ORGANISER_EVENT_BOARD_URL.'css/event-board.css' );
-	wp_localize_script( 'eo_event_board', 'eventorganiser_event_board',
+	wp_enqueue_script( 'eo_posterboard', EVENT_ORGANISER_POSTERBOARD_URL."js/event-board{$ext}.js", array( 'jquery', 'jquery-masonry' ) );
+	wp_enqueue_style( 'eo_posterboard', EVENT_ORGANISER_POSTERBOARD_URL.'css/event-board.css' );
+	wp_localize_script( 'eo_posterboard', 'eventorganiser_posterboard',
 		array(
 			'url' => admin_url( 'admin-ajax.php' ),
 			'loading' => __( 'Loading...', 'eventorganiser' ),
@@ -152,10 +156,10 @@ function eventorganiser_event_board_shortcode_handler( $atts ){
 			.<div id="event-board-more"></div>'
 		.'</div>';
 }
-add_shortcode( 'event_board', 'eventorganiser_event_board_shortcode_handler' );
+add_shortcode( 'event_board', 'eventorganiser_posterboard_shortcode_handler' );
 
 
-function eventorganiser_event_boad_ajax_response(){
+function eventorganiser_posterboard_ajax_response(){
 
 	$page = $_GET['page'];
 	$event_query = new WP_Query( array(
@@ -209,7 +213,7 @@ function eventorganiser_event_boad_ajax_response(){
 					'event_range' => eo_get_the_start( $start_format ) . ' - ' . eo_get_the_end( $end_format ),
 			);
 			
-			$event = apply_filters( 'eventorganiser_event_board_item', $event, $event['event_id'], $event['occurrence_id'] );
+			$event = apply_filters( 'eventorganiser_posterboard_item', $event, $event['event_id'], $event['occurrence_id'] );
 			$response[] = $event;
 		}
 	}
@@ -219,5 +223,5 @@ function eventorganiser_event_boad_ajax_response(){
 	echo json_encode($response);
 	exit();
 }
-add_action( 'wp_ajax_event_board', 'eventorganiser_event_boad_ajax_response' );
-add_action( 'wp_ajax_nopriv_event_board', 'eventorganiser_event_boad_ajax_response' );
+add_action( 'wp_ajax_event_board', 'eventorganiser_posterboard_ajax_response' );
+add_action( 'wp_ajax_nopriv_event_board', 'eventorganiser_posterboard_ajax_response' );

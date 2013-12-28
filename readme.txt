@@ -1,12 +1,13 @@
-=== Event Organiser Event Posterboard ===
+=== Event Organiser Posterboard ===
 Contributors: stephenharris
 Donate link: http://www.wp-event-organiser.com/donate
+Tags: events, event, posterboard, responsive, event-organiser, grid
 Requires at least: 3.3
-Tested up to: 3.6
-Stable tag: 0.2
+Tested up to: 3.8
+Stable tag: 0.3.0
 License: GPLv3
 
-Adds an 'event board' to display your events in a poster board format. To display, simply use `[event_board]` shortcode on a page.
+Adds an 'event board' to display your events in a responsive posterboard.
 
 == Description ==
 
@@ -20,9 +21,9 @@ You can add filters at the top of the event board to filter the events. Supporte
  
  * venue
  * category
- * city (*Pro only*)
- * state (*Pro only*)
- * country (*Pro only*)  
+ * city (*when installed with Event Organiser Pro*)
+ * state (*when installed with Event Organiser Pro*)
+ * country (*when installed with Event Organiser Pro*)
 
 For example
 
