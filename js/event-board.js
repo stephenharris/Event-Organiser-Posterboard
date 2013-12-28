@@ -1,27 +1,25 @@
+/*jshint -W054 */
 jQuery(document).ready(function ($) {
 
 	//Workaround for indexOf in IE 7&8
 	if (!Array.prototype.indexOf){
-	  Array.prototype.indexOf = function(elt /*, from*/){
-	    var len = this.length;
+		Array.prototype.indexOf = function(elt /*, from*/){
+			var len = this.length;
 
-	    var from = Number(arguments[1]) || 0;
-	    from = (from < 0)
-	         ? Math.ceil(from)
-	         : Math.floor(from);
-	    if (from < 0)
-	      from += len;
+			var from = Number(arguments[1]) || 0;
+			from = (from < 0) ? Math.ceil(from) : Math.floor(from);
 
-	    for (; from < len; from++){
-	      if (from in this &&
-	          this[from] === elt)
-	        return from;
-	    }
-	    return -1;
-	  }
+			if ( from < 0 )
+				from += len;
+
+			for (; from < len; from++ ){
+				if ( from in this && this[from] === elt )
+					return from;
+			}
+			return -1;
+		};
 	}
-	  
-	
+
 	$('.event-board-filter').click(function(e){
 		
 		e.preventDefault();
@@ -32,7 +30,7 @@ jQuery(document).ready(function ($) {
 		var filterOn = $(this).data('filter-on');
 		var activeFilters = $('#event-board-filters').data('filters').split(',');
 
-		if( activeFilters.length == 1 && activeFilters[0] == "" )
+		if( activeFilters.length === 1 && activeFilters[0] === "" )
 			activeFilters = [];
 
 		if( !filterOn ){
@@ -48,7 +46,7 @@ jQuery(document).ready(function ($) {
 			var index = activeFilters.indexOf( filter );
 			if( index > -1 ){
 				activeFilters.splice(index, 1);
-				$.grep(activeFilters,function(n){ return(n) });
+				$.grep(activeFilters,function(n){ return(n); });
 			}
 			
 			if( activeFilters.length > 0 ){
@@ -78,9 +76,10 @@ jQuery(document).ready(function ($) {
 	
 	
 
-	  // JavaScript micro-templating, similar to John Resig's implementation.
-	  // Underscore templating handles arbitrary delimiters, preserves whitespace,
-	  // and correctly escapes quotes within interpolated code.
+	//JavaScript micro-templating, similar to John Resig's implementation.
+	//Underscore templating handles arbitrary delimiters, preserves whitespace,
+	//and correctly escapes quotes within interpolated code.
+	//This is taken from underscore.
 	function eo_event_board_template_handler( text, data ){
 
 		var escaper = /\\|'|\r|\n|\t|\u2028|\u2029/g;
@@ -88,54 +87,53 @@ jQuery(document).ready(function ($) {
 		var settings = {
 				evaluate    : /<%([\s\S]+?)%>/g,
 				interpolate : /<%=([\s\S]+?)%>/g,
-			    escape      : /<%-([\s\S]+?)%>/g
-			  };
+				escape      : /<%-([\s\S]+?)%>/g
+		};
 		var escapes = {
-			    "'":      "'",
-			    '\\':     '\\',
-			    '\r':     'r',
-			    '\n':     'n',
-			    '\t':     't',
-			    '\u2028': 'u2028',
-			    '\u2029': 'u2029'
-			  };
+				"'":      "'",
+				'\\':     '\\',
+				'\r':     'r',
+				'\n':     'n',
+				'\t':     't',
+				'\u2028': 'u2028',
+				'\u2029': 'u2029'
+		};
 		
 		var render;
 
 		//Combine delimiters into one regular expression via alternation.
 		var matcher = new RegExp([
               (settings.escape ).source,
-		      (settings.interpolate ).source,
-		      (settings.evaluate ).source
-		    ].join('|') + '|$', 'g');
+              (settings.interpolate ).source,
+              (settings.evaluate ).source
+              ].join('|') + '|$', 'g');
 		
 		//Compile the template source, escaping string literals appropriately.
 		var index = 0;
 		var source = "__p+='";
 		text.replace(matcher, function(match, escape, interpolate, evaluate, offset) {
-		      source += text.slice(index, offset)
-		        .replace(escaper, function(match) { return '\\' + escapes[match]; });
+			source += text.slice(index, offset).replace(escaper, function(match) { return '\\' + escapes[match]; });
 
-		      if (escape) {
-		        source += "'+\n((__t=(" + escape + "))==null?'':_.escape(__t))+\n'";
-		      }
-		      if (interpolate) {
-		        source += "'+\n((__t=(" + interpolate + "))==null?'':__t)+\n'";
-		      }
-		      if (evaluate) {
-		        source += "';\n" + evaluate + "\n__p+='";
-		      }
-		      index = offset + match.length;
-		      return match;
+			if (escape) {
+				source += "'+\n((__t=(" + escape + "))==null?'':_.escape(__t))+\n'";
+			}
+			if (interpolate) {
+				source += "'+\n((__t=(" + interpolate + "))==null?'':__t)+\n'";
+			}
+			if (evaluate) {
+				source += "';\n" + evaluate + "\n__p+='";
+			}
+			index = offset + match.length;
+			return match;
 		});
 		source += "';\n";
-		
+
 		//If a variable is not specified, place data values in local scope.
 		if (!settings.variable) source = 'with(obj||{}){\n' + source + '}\n';
 		 
 		source = "var __t,__p='',__j=Array.prototype.join," +
-		      "print=function(){__p+=__j.call(arguments,'');};\n" +
-		      source + "return __p;\n";
+			"print=function(){__p+=__j.call(arguments,'');};\n" +
+			source + "return __p;\n";
 
 		try {
 			render = new Function(settings.variable || 'obj', '_', source);
@@ -149,14 +147,13 @@ jQuery(document).ready(function ($) {
 		var template = function( data ) {
 			return render.call( this, data );
 		};
-		    
+		
 		return template;
-	};
+	}
 	
 	
 	var $container = $('#event-board-items');
 	var width = $container.parent().width();
-	var columnWidth = Math.floor((width -3*2*2*10)/3);
 
 	$('#event-board-more').text( eventorganiser_event_board.loading );
 	var page = 1;
@@ -165,80 +162,73 @@ jQuery(document).ready(function ($) {
 	var event_board_template = eo_event_board_template_handler( template );
 	
 	$.ajax({
-  	  url: eventorganiser_event_board.url,
-  	  dataType: 'json',
-  	  data:{
-  		  action: 'event_board',
-  		  page: page
-  	  }
-  		}).done(function ( events ) {
-  			
-  			var html = '';
-  			for( var i=0; i< events.length; i++ ){
-  				var event = events[i];
-  				html = event_board_template( event );
-  				
-  				$container.append(html);
-  			}
-  			
-  			$container.imagesLoaded( function(){
-  			  $container.masonry({
-  				    // options
-  				  	/*columnWidth: function( containerWidth ) {
-  				  		return containerWidth / 4;
-  				  	},*/
-  				  	isFitWidth: true,
-  				    itemSelector : '.event-box',
-  				    isAnimatedFromBottom: true,
-  				    isAnimated: true,
-  				    singleMode: true,
-  					layoutPriorities: {
-  						shelfOrder: 0
-  					}
-  			  });
-  			});
-  			
-  			$('#event-board-more').text( eventorganiser_event_board.load_more );
-  			$('#event-board-more').click( eventorganiser_fetch_events );
-  	    })
-						
+		url: eventorganiser_event_board.url,
+		dataType: 'json',
+		data:{
+			action: 'event_board',
+			page: page
+		}
+	}).done(function ( events ) {
+
+		var html = '';
+		for( var i=0; i< events.length; i++ ){
+			var event = events[i];
+			html = event_board_template( event );
+			$container.append(html);
+		}
+
+		$container.imagesLoaded( function(){
+			$container.masonry({
+				isFitWidth: true,
+				itemSelector : '.event-box',
+				isAnimatedFromBottom: true,
+				isAnimated: true,
+				singleMode: true,
+				layoutPriorities: {
+					shelfOrder: 0
+				}
+			});
+		});
+
+		$('#event-board-more').text( eventorganiser_event_board.load_more );
+		$('#event-board-more').click( eventorganiser_fetch_events );
+	});
+
 	function eventorganiser_fetch_events(){
 		page++;
 		$.ajax({
-    	  url: eventorganiser_event_board.url,
-    	  dataType: 'json',
-    	  data:{
-    		  action: 'event_board',
-    		  page: page
-    	  }
+			url: eventorganiser_event_board.url,
+			dataType: 'json',
+			data:{
+				action: 'event_board',
+				page: page
+			}
 		}).done(function ( events ) {
-    			$('#event-board-more').text('Load more');
-    			var html = '';
-    			for( var i=0; i< events.length; i++ ){
-    				var event = events[i];
-    				var template = eventorganiser_event_board.template;
-    				html += event_board_template( event );
-    			}
-    			if( events.length < 10 )
-    				$('#event-board-more').hide();
-    			
-    			var $box = $(html);
+			$('#event-board-more').text('Load more');
+			var html = '';
+			for( var i=0; i< events.length; i++ ){
+				var event = events[i];
+				html += event_board_template( event );
+			}
+			if( events.length < 10 )
+				$('#event-board-more').hide();
 
-    			var activeFilters = $('#event-board-filters').data('filters').split(',');
-    			if( activeFilters.length == 1 && activeFilters[0] == "" )
-    				activeFilters = [];
+			var $box = $(html);
+			var activeFilters = $('#event-board-filters').data('filters').split(',');
 
-    			$container.append( $box ).masonry( 'appended', $box, true );
-    			
-    			if( activeFilters.length > 0 ){
-    				var select = '#event-board .'+activeFilters.join(', #event-board .');
-    				$( select )
-    					.css({'visibility': 'hidden', 'display': 'none'})
-    					.removeClass("event-box masonry-brick masonry-brick")
-    					.addClass('event-box-hidden');
-    			}
-    			$(window).trigger('resize');
-    	    });
-    }
+			if( activeFilters.length == 1 && activeFilters[0] === "" )
+				activeFilters = [];
 
+			$container.append( $box ).masonry( 'appended', $box, true );
+
+			if( activeFilters.length > 0 ){
+				var select = '#event-board .'+activeFilters.join(', #event-board .');
+				$( select )
+					.css({'visibility': 'hidden', 'display': 'none'})
+					.removeClass("event-box masonry-brick masonry-brick")
+					.addClass('event-box-hidden');
+			}
+			$(window).trigger('resize');
+		});
+	}
 });
