@@ -65,8 +65,8 @@ function eventorganiser_posterboard_shortcode_handler( $atts ){
 	wp_localize_script( 'eo_posterboard', 'eventorganiser_posterboard',
 		array(
 			'url' => admin_url( 'admin-ajax.php' ),
-			'loading' => __( 'Loading...', 'eventorganiser' ),
-			'load_more' => __( 'Load more', 'eventorganiser' ),
+			'loading' => __( 'Loading...', 'event-organiser-posterboard' ),
+			'load_more' => __( 'Load more', 'event-organiser-posterboard' ),
 			'template' => $template
 		));
 	
@@ -115,7 +115,7 @@ function eventorganiser_posterboard_shortcode_handler( $atts ){
 				$filers_markup .= sprintf(
 					'<a href="#" class="event-board-filter filter-category filter-category-%1$d" data-filter-type="category" data-category="%1$d" data-filter-on="false">%2$s</a>',
 					0,
-					__('Uncategorised')
+					__( 'Uncategorised', 'event-organiser-posterboard' )
 				);
 			break;
 			
