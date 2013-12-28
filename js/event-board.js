@@ -155,17 +155,17 @@ jQuery(document).ready(function ($) {
 	var $container = $('#event-board-items');
 	var width = $container.parent().width();
 
-	$('#event-board-more').text( eventorganiser_event_board.loading );
+	$('#event-board-more').text( eventorganiser_posterboard.loading );
 	var page = 1;
 	
-	var template = eventorganiser_event_board.template;
+	var template = eventorganiser_posterboard.template;
 	var event_board_template = eo_event_board_template_handler( template );
 	
 	$.ajax({
-		url: eventorganiser_event_board.url,
+		url: eventorganiser_posterboard.url,
 		dataType: 'json',
 		data:{
-			action: 'event_board',
+			action: 'eventorganiser-posterboard',
 			page: page
 		}
 	}).done(function ( events ) {
@@ -190,17 +190,17 @@ jQuery(document).ready(function ($) {
 			});
 		});
 
-		$('#event-board-more').text( eventorganiser_event_board.load_more );
+		$('#event-board-more').text( eventorganiser_posterboard.load_more );
 		$('#event-board-more').click( eventorganiser_fetch_events );
 	});
 
 	function eventorganiser_fetch_events(){
 		page++;
 		$.ajax({
-			url: eventorganiser_event_board.url,
+			url: eventorganiser_posterboard.url,
 			dataType: 'json',
 			data:{
-				action: 'event_board',
+				action: 'eventorganiser-posterboard',
 				page: page
 			}
 		}).done(function ( events ) {

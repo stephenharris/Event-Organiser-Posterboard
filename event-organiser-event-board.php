@@ -221,7 +221,7 @@ function eventorganiser_posterboard_ajax_response(){
 	wp_reset_postdata();
 	
 	echo json_encode($response);
-	exit();
+	exit;
 }
-add_action( 'wp_ajax_event_board', 'eventorganiser_posterboard_ajax_response' );
-add_action( 'wp_ajax_nopriv_event_board', 'eventorganiser_posterboard_ajax_response' );
+add_action( 'wp_ajax_eventorganiser-posterboard', 'eventorganiser_posterboard_ajax_response' );
+add_action( 'wp_ajax_nopriv_eventorganiser-posterboard', 'eventorganiser_posterboard_ajax_response' );
