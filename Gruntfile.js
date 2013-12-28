@@ -101,7 +101,7 @@ module.exports = function(grunt) {
 
 	pot: {
 		options:{
-        	text_domain: 'eventorganisereb',
+        	text_domain: 'event-organiser-posterboard',
 	        dest: 'languages/',
 			keywords: [
 				'__:1',
@@ -133,7 +133,7 @@ module.exports = function(grunt) {
 
 	checktextdomain: {
 		options:{
-			text_domain: 'eventorganisereb',
+			text_domain: 'event-organiser-posterboard',
 			correct_domain: true,
 			keywords: [
 			'__:1,2d',
@@ -185,23 +185,17 @@ module.exports = function(grunt) {
 			compare: '==',
 		},
 	},
-	
-	aws: grunt.file.readJSON('.aws.json'), // Read the file
-	aws_s3: {
-		options: {
-			accessKeyId: '<%= aws.AWSAccessKeyId %>', // Use the variables
-			secretAccessKey: '<%= aws.AWSSecretKey %>', // You can also use env variables
-			region: 'us-east-1',
-			uploadConcurrency: 5, // 5 simultaneous uploads
-		},
-		deploy: {
+
+    
+	wp_deploy: {
+	    	deploy:{
 			options: {
-				bucket: 'event-organiser-pro',
-				access: 'private'
-			},
-			files: [ { src: ['build/<%= pkg.name %>.zip'], dest: '<%= pkg.name %>.zip'} ]
-      		},
-   	 },
+				svn_user: 'stephenharris',
+				plugin_slug: 'event-organiser-posterboard',
+				build_dir: 'build/posterboard/'
+			},	
+		}
+	},
     
 });
 
@@ -211,8 +205,8 @@ grunt.registerTask( 'default', ['jshint', 'uglify'] );
 	
 grunt.registerTask( 'test', [ 'jshint', 'checktextdomain' ] );
 
-grunt.registerTask( 'build', [ 'test', 'newer:uglify', 'pot', 'newer:po2mo', 'wp_readme_to_markdown', 'clean', 'copy', 'compress' ] );
+grunt.registerTask( 'build', [ 'test', 'newer:uglify', 'pot', 'newer:po2mo', 'wp_readme_to_markdown', 'clean', 'copy' ] );
 
-grunt.registerTask( 'deploy', [ 'checkwpversion', 'checkbranch:master', 'checkrepo:deploy', 'build', 'aws_s3:deploy' ] );
+grunt.registerTask( 'deploy', [ 'checkwpversion', 'checkbranch:master', 'checkrepo:deploy', 'build', 'wp_deploy', 'compress' ] );
 	
 };
