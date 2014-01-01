@@ -53,6 +53,10 @@ Simply copy that template (`single-event-board-item.html`) into your theme and e
 
 == Screenshots ==
 
+1. Event posterboard
+2. Event posterboard
+
+
 == Changelog ==
 
 == Upgrade Notice ==

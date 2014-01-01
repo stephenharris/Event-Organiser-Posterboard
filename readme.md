@@ -53,6 +53,14 @@ Simply copy that template (`single-event-board-item.html`) into your theme and e
 
 ## Screenshots ##
 
+### 1. Event posterboard ###
+![Event posterboard](http://s.wordpress.org/extend/plugins/event-organiser-posterboard/screenshot-1.png)
+
+### 2. Event posterboard ###
+![Event posterboard](http://s.wordpress.org/extend/plugins/event-organiser-posterboard/screenshot-2.png)
+
+
+
 ## Changelog ##
 
 ## Upgrade Notice ##
