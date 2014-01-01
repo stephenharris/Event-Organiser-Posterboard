@@ -192,7 +192,7 @@ module.exports = function(grunt) {
 			options: {
 				svn_user: 'stephenharris',
 				plugin_slug: 'event-organiser-posterboard',
-				build_dir: 'build/posterboard/'
+				build_dir: 'build/event-organiser-posterboard/'
 			},	
 		}
 	},
