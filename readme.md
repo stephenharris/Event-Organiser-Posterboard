@@ -4,7 +4,7 @@
 **Tags:** events, event, posterboard, responsive, event-organiser, grid  
 **Requires at least:** 3.3  
 **Tested up to:** 3.8  
-**Stable tag:** 0.3.0  
+**Stable tag:** 0.4.0  
 **License:** GPLv3  
 
 Adds an 'event board' to display your events in a responsive posterboard.
