@@ -176,11 +176,11 @@ module.exports = function(grunt) {
 	checkwpversion: {
 		plugin_equals_stable: {
 			version1: 'plugin',
-	    		version2: 'readme',
-			compare: '!=',
+	    	version2: 'readme',
+			compare: '==',
 		},
 		plugin_equals_package: {
-	    		version1: 'plugin',
+	    	version1: 'plugin',
 			version2: '<%= pkg.version %>',
 			compare: '==',
 		},
@@ -188,7 +188,7 @@ module.exports = function(grunt) {
 
     
 	wp_deploy: {
-	    	deploy:{
+		deploy:{
 			options: {
 				svn_user: 'stephenharris',
 				plugin_slug: 'event-organiser-posterboard',
