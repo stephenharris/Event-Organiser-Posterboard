@@ -27,11 +27,11 @@ You can add filters at the top of the event board to filter the events. Supporte
 
 For example
 
-     [event_board filter="state"]
+     [event_board filters="state"]
      
 You can display multiple filters by listing them as a comma delimited list
 
-     [event_board filter="venue,category"]
+     [event_board filters="venue,category"]
      
 
 You can edit the template used for the event board. See the FAQ.
