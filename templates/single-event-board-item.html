@@ -1,6 +1,4 @@
-<div class="event-box <% if( event_venue_id ){ %> venue-<%=event_venue_id%> <% } %><% if( event_cat_ids ){ %> category-<% event_cat_ids.join(' category-')%> <% } %><% if( event_venue_city ){ %> city-<%=event_venue_city%> <% } %><% if( event_venue_state ){ %> state-<%=event_venue_state%> <% } %><% if( event_venue_country ){ %> country-<%=event_venue_country%> <% } %>" 
-	 data-venue="<% if( event_venue_id ){ event_venue_id } %>" 
-	 data-category="<% if( event_cat_ids ){ event_cat_ids.join(' category-') } %>">
+<div class="event-box venue-<%=event_venue_id%> category-<%= event_cat_ids.join(' category-') %> city-<%=event_venue_city%> state-<%=event_venue_state%> country-<%=event_venue_country%>" data-venue="<%=event_venue_id%>" data-category="<% event_cat_ids.join(',') %>">
 
 	<div class="eo-date-container">
 		<span class="eo-date-month" style="background-color: <%=event_color%>;"><%=event_start_month%></span>
