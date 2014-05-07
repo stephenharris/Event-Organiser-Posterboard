@@ -94,7 +94,7 @@ function eventorganiser_posterboard_shortcode_handler( $atts ){
 					foreach( $venues as $venue ){
 			
 						$filers_markup .= sprintf(
-								'<a href="#" class="event-board-filter filter-venue filter-venue-%1$d" data-filter-type="venue" data-venue="%1$d" data-filter-on="false">%2$s</a>',
+								'<a href="#" class="eo-eb-filter eo-eb-filter-venue eo-eb-filter-venue-%1$d" data-filter-type="venue" data-venue="%1$d" data-filter-on="false">%2$s</a>',
 								$venue->term_id,
 								$venue->name
 							);
@@ -106,14 +106,14 @@ function eventorganiser_posterboard_shortcode_handler( $atts ){
 				if( $cats ){
 					foreach( $cats as $cat ){
 						$filers_markup .= sprintf(
-							'<a href="#" class="event-board-filter filter-category filter-category-%1$d" data-filter-type="category" data-category="%1$d" data-filter-on="false">%2$s</a>',
+							'<a href="#" class="eo-eb-filter eo-eb-filter-category eo-eb-filter-category-%1$d" data-filter-type="category" data-category="%1$d" data-filter-on="false">%2$s</a>',
 							$cat->term_id,
 							$cat->name
 						);
 					}
 				}
 				$filers_markup .= sprintf(
-					'<a href="#" class="event-board-filter filter-category filter-category-%1$d" data-filter-type="category" data-category="%1$d" data-filter-on="false">%2$s</a>',
+					'<a href="#" class="eo-eb-filter eo-eb-filter-category eo-eb-filter-category-%1$d" data-filter-type="category" data-category="%1$d" data-filter-on="false">%2$s</a>',
 					0,
 					__( 'Uncategorised', 'event-organiser-posterboard' )
 				);
@@ -138,7 +138,7 @@ function eventorganiser_posterboard_shortcode_handler( $atts ){
 				if( $terms ){
 					foreach( $terms as $term ){
 						$filers_markup .= sprintf(
-							'<a href="#" class="event-board-filter filter-%1$s filter-%1$s-%2$s" data-filter-type="%1$s" data-%1$s="%2$s" data-filter-on="false">%2$s</a>',
+							'<a href="#" class="eo-eb-filter eo-eb-filter-%1$s eo-eb-filter-%1$s-%2$s" data-filter-type="%1$s" data-%1$s="%2$s" data-filter-on="false">%2$s</a>',
 							$filter,
 							$term
 						);

@@ -20,13 +20,13 @@ jQuery(document).ready(function ($) {
 		};
 	}
 
-	$('.event-board-filter').click(function(e){
+	$('.eo-eb-filter').click(function(e){
 		
 		e.preventDefault();
 		
 		var type = $(this).data('filter-type');
 		var value = $(this).data(type);
-		var filter = 'eo-'+type + '-' + value;
+		var filter = 'eo-eb-'+type + '-' + value;
 		var filterOn = $(this).data('filter-on');
 		var activeFilters = $('#event-board-filters').data('filters').split(',');
 
@@ -69,7 +69,7 @@ jQuery(document).ready(function ($) {
 		//Update dom data
 		$('#event-board-filters').data('filters', activeFilters.join(','));
 		$(this).data('filter-on', !filterOn );
-		$(this).toggleClass( 'eo-filter-on', !filterOn );
+		$(this).toggleClass( 'eo-eb-filter-on', !filterOn );
 			
 		$('#event-board-items').masonry('reload');
 	});
