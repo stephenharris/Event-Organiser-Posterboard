@@ -26,7 +26,7 @@ jQuery(document).ready(function ($) {
 		
 		var type = $(this).data('filter-type');
 		var value = $(this).data(type);
-		var filter = type + '-' + value;
+		var filter = 'eo-'+type + '-' + value;
 		var filterOn = $(this).data('filter-on');
 		var activeFilters = $('#event-board-filters').data('filters').split(',');
 
