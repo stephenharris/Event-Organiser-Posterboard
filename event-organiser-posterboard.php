@@ -210,7 +210,7 @@ function eventorganiser_posterboard_ajax_response(){
 					'event_venue_country' => ( $venue_id ? $address['country'] : false ),
 					'event_venue_url' => ( $venue_id ? eo_get_venue_link( $venue_id ) : false ),
 					'event_is_all_day' => eo_is_all_day(),
-					'event_cat_ids' =>  $categories ? array_values( wp_list_pluck( $categories, 'term_id' ) ) : array( 0 ), 
+					'event_cat_ids' =>  $categories ? array_values( wp_list_pluck( $categories, 'term_id' ) ) : false, 
 					'event_range' => eo_get_the_start( $start_format ) . ' - ' . eo_get_the_end( $end_format ),
 			);
 			
