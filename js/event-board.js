@@ -228,7 +228,7 @@ jQuery(document).ready(function ($) {
 					.removeClass("event-box masonry-brick masonry-brick")
 					.addClass('event-box-hidden');
 			}
-			$(window).trigger('resize');
+			$container.masonry( 'reload' );
 		});
 	}
 });
