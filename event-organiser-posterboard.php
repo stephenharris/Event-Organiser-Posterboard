@@ -167,6 +167,7 @@ function eventorganiser_posterboard_ajax_response(){
 			'event_start_after' => 'today',
 			'numberposts' => 10,
 			'paged' => $page,
+			'post_status' => get_post_stati( array('public' => true) )
 	));
 
 	$response = array();
