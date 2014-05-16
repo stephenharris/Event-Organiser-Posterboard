@@ -28,7 +28,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 */
 
-define( 'EVENT_ORGANISER_POSTERBOARD_DIR',plugin_dir_path(__FILE__ ));
+define( 'EVENT_ORGANISER_POSTERBOARD_VER', '1.0.1' );
+define( 'EVENT_ORGANISER_POSTERBOARD_DIR',plugin_dir_path(__FILE__ ) );
 function _eventorganiser_posterboard_set_constants(){
 	/*
 	 * Defines the plug-in directory url
@@ -60,8 +61,9 @@ function eventorganiser_posterboard_shortcode_handler( $atts ){
 	
 	//Load & 'localize' script
 	$ext = (defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG) ? '' : '.min';
-	wp_enqueue_script( 'eo_posterboard', EVENT_ORGANISER_POSTERBOARD_URL."js/event-board{$ext}.js", array( 'jquery', 'jquery-masonry' ) );
-	wp_enqueue_style( 'eo_posterboard', EVENT_ORGANISER_POSTERBOARD_URL.'css/event-board.css' );
+	$ver = EVENT_ORGANISER_POSTERBOARD_VER;
+	wp_enqueue_script( 'eo_posterboard', EVENT_ORGANISER_POSTERBOARD_URL."js/event-board{$ext}.js", array( 'jquery', 'jquery-masonry' ), $ver );
+	wp_enqueue_style( 'eo_posterboard', EVENT_ORGANISER_POSTERBOARD_URL.'css/event-board.css', array(), $ver );
 	wp_localize_script( 'eo_posterboard', 'eventorganiser_posterboard',
 		array(
 			'url' => admin_url( 'admin-ajax.php' ),
