@@ -176,6 +176,11 @@ jQuery(document).ready(function ($) {
 			html = event_board_template( event );
 			$container.append(html);
 		}
+		
+		//If there are less than 10 events, then we won't need this...
+		if( events.length < 10 ){
+			$('#event-board-more').hide();
+		}
 
 		$container.imagesLoaded( function(){
 			$container.masonry({
@@ -210,8 +215,9 @@ jQuery(document).ready(function ($) {
 				var event = events[i];
 				html += event_board_template( event );
 			}
-			if( events.length < 10 )
+			if( events.length < 10 ){
 				$('#event-board-more').hide();
+			}
 
 			var $box = $(html);
 			var activeFilters = $('#event-board-filters').data('filters').split(',');
