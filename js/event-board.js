@@ -39,8 +39,8 @@ jQuery(document).ready(function ($) {
 			
 			$('#event-board .' + filter )
 				.css({'visibility': 'hidden', 'display': 'none'})
-				.removeClass("event-box masonry-brick masonry-brick")
-				.addClass('event-box-hidden');
+				.removeClass("eo-eb-event-box masonry-brick masonry-brick")
+				.addClass('eo-eb-event-box-hidden');
 			
 		}else{
 			var index = activeFilters.indexOf( filter );
@@ -55,13 +55,13 @@ jQuery(document).ready(function ($) {
 				$('#event-board .' + filter )
 					.not( '.'+activeFilters.join(', .') )
 					.css({'visibility': 'visible', 'display': 'block'})
-					.addClass("event-box masonry-brick masonry-brick")
-					.removeClass('event-box-hidden');
+					.addClass("eo-eb-event-box masonry-brick masonry-brick")
+					.removeClass('eo-eb-event-box-hidden');
 			}else{
 				$('#event-board .' + filter )
 					.css({'visibility': 'visible', 'display': 'block'})
-					.addClass("event-box masonry-brick masonry-brick")
-					.removeClass('event-box-hidden');
+					.addClass("eo-eb-event-box masonry-brick masonry-brick")
+					.removeClass('eo-eb-event-box-hidden');
 			}
 			
 		}
@@ -185,7 +185,7 @@ jQuery(document).ready(function ($) {
 		$container.imagesLoaded( function(){
 			$container.masonry({
 				isFitWidth: true,
-				itemSelector : '.event-box',
+				itemSelector : '.eo-eb-event-box',
 				isAnimatedFromBottom: true,
 				isAnimated: true,
 				singleMode: true,
@@ -231,8 +231,8 @@ jQuery(document).ready(function ($) {
 				var select = '#event-board .'+activeFilters.join(', #event-board .');
 				$( select )
 					.css({'visibility': 'hidden', 'display': 'none'})
-					.removeClass("event-box masonry-brick masonry-brick")
-					.addClass('event-box-hidden');
+					.removeClass("eo-eb-event-box masonry-brick masonry-brick")
+					.addClass('eo-eb-event-box-hidden');
 			}
 			$container.masonry( 'reload' );
 		});
