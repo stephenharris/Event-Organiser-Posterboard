@@ -2,7 +2,7 @@
 /*
 Plugin Name: Event Organiser Posterboard
 Plugin URI: http://www.wp-event-organiser.com
-Version: 1.0.0
+Version: 1.0.1
 Description: Display events in as a responsive posterboard.
 Author: Stephen Harris
 Author URI: http://www.stephenharris.info
