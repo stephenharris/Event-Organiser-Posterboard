@@ -165,11 +165,11 @@ function eventorganiser_posterboard_ajax_response(){
 
 	$page = $_GET['page'];
 	$event_query = new WP_Query( array(
-			'post_type' => 'event',
-			'event_start_after' => 'today',
-			'numberposts' => 10,
-			'paged' => $page,
-			'post_status' => get_post_stati( array('public' => true) )
+		'post_type'         => 'event',
+		'event_start_after' => 'today',
+		'posts_per_page'    => 10,
+		'paged'             => $page,
+		'post_status'       => get_post_stati( array('public' => true) )
 	));
 
 	$response = array();
