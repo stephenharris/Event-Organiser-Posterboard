@@ -154,8 +154,8 @@ function eventorganiser_posterboard_shortcode_handler( $atts ){
 	return
 		'<div id="event-board">' 
 			.'<div id="event-board-filters" data-filters="">'. $filers_markup . '</div>'  
-			.'<div id="event-board-items"></div>
-			.<div id="event-board-more"></div>'
+			.'<div id="event-board-items"></div>'
+			.'<div id="event-board-more"></div>'
 		.'</div>';
 }
 add_shortcode( 'event_board', 'eventorganiser_posterboard_shortcode_handler' );
