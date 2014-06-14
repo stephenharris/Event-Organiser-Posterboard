@@ -59,6 +59,11 @@ Simply copy that template (`single-event-board-item.html`) into your theme and e
 
 == Changelog ==
 
+= 1.0.2 =
+* Fixes bug on some installs where the "load more" bar does not appear.
+* Fixes rogue "dot" appearing 
+* Added Hungarian translation (thanks to Daniel Kocsis).
+
 = 1.0.1 =
 * Renamed classes to use `eo-pb-` prefix.
 * Fixed bug where draft events appeared on the board.
