@@ -166,7 +166,8 @@ jQuery(document).ready(function ($) {
 		dataType: 'json',
 		data:{
 			action: 'eventorganiser-posterboard',
-			page: page
+			page: page,
+			query: eventorganiser_posterboard.query
 		}
 	}).done(function ( events ) {
 
@@ -206,7 +207,8 @@ jQuery(document).ready(function ($) {
 			dataType: 'json',
 			data:{
 				action: 'eventorganiser-posterboard',
-				page: page
+				page: page,
+				query: eventorganiser_posterboard.query
 			}
 		}).done(function ( events ) {
 			$('#event-board-more').text('Load more');

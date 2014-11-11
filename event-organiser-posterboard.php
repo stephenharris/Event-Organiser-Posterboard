@@ -47,11 +47,11 @@ function eventorganiser_posterboard_register_stack( $stacks ){
 add_filter( 'eventorganiser_template_stack', 'eventorganiser_posterboard_register_stack' );
 
 
-function eventorganiser_posterboard_shortcode_handler( $atts ){
+function eventorganiser_posterboard_shortcode_handler( $atts = array() ){
 	
-	$atts = shortcode_atts(array(
-				'filters' => "",
-			), $atts);
+	$defaults = array( 'filters' => "" );
+	$query    = array_diff_key( (array) $atts, $defaults );
+	$atts     = shortcode_atts( $defaults, $atts );
 	
 	//Get template
 	ob_start();
@@ -66,10 +66,11 @@ function eventorganiser_posterboard_shortcode_handler( $atts ){
 	wp_enqueue_style( 'eo_posterboard', EVENT_ORGANISER_POSTERBOARD_URL.'css/event-board.css', array(), $ver );
 	wp_localize_script( 'eo_posterboard', 'eventorganiser_posterboard',
 		array(
-			'url' => admin_url( 'admin-ajax.php' ),
-			'loading' => __( 'Loading...', 'event-organiser-posterboard' ),
+			'url'       => admin_url( 'admin-ajax.php' ),
+			'loading'   => __( 'Loading...', 'event-organiser-posterboard' ),
 			'load_more' => __( 'Load more', 'event-organiser-posterboard' ),
-			'template' => $template
+			'template'  => $template,
+			'query'     => $query
 		));
 	
 	
@@ -164,13 +165,21 @@ add_shortcode( 'event_board', 'eventorganiser_posterboard_shortcode_handler' );
 function eventorganiser_posterboard_ajax_response(){
 
 	$page = $_GET['page'];
-	$event_query = new WP_Query( array(
-		'post_type'         => 'event',
-		'event_start_after' => 'today',
-		'posts_per_page'    => 10,
-		'paged'             => $page,
-		'post_status'       => get_post_stati( array('public' => true) )
-	));
+	
+	$query = array_merge( 
+		array(
+			'event_start_after' => 'today',
+			'posts_per_page'    => 10,
+		),
+		$_GET['query'],
+		array(
+			'post_type'         => 'event',
+			'paged'             => $page,
+			'post_status'       => get_post_stati( array('public' => true) )
+		)
+	);
+	
+	$event_query = new WP_Query( $query );
 
 	$response = array();
 	if( $event_query->have_posts() ){
