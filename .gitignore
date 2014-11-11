@@ -6,3 +6,6 @@
 build
 node_modules
 /.aws.json
+*.min.js
+*.md
+*.pot
