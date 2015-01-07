@@ -71,8 +71,11 @@ function eventorganiser_posterboard_shortcode_handler( $atts = array() ){
 	ob_end_clean();
 	
 	//Load & 'localize' script
+	if( !eventorganiser_get_option( 'disable_css' ) ){
+		wp_enqueue_style( 'eo_posterboard' );
+	}
 	wp_enqueue_script( 'eo_posterboard' );
-	wp_enqueue_style( 'eo_posterboard' );
+
 	wp_localize_script( 'eo_posterboard', 'eventorganiser_posterboard',
 		array(
 			'url'       => admin_url( 'admin-ajax.php' ),
