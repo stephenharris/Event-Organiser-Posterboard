@@ -44,6 +44,19 @@ function eventorganiser_posterboard_register_stack( $stacks ){
 }
 add_filter( 'eventorganiser_template_stack', 'eventorganiser_posterboard_register_stack' );
 
+function eventorganiser_posterboard_register_styles(){
+	$ver = EVENT_ORGANISER_POSTERBOARD_VER;
+	wp_register_style( 'eo_posterboard', EVENT_ORGANISER_POSTERBOARD_URL.'css/event-board.css', array(), $ver );
+}
+add_action( 'init', 'eventorganiser_posterboard_register_styles' );
+
+function eventorganiser_posterboard_register_scripts(){
+	$ext = (defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG) ? '' : '.min';
+	$ver = EVENT_ORGANISER_POSTERBOARD_VER;
+	wp_register_script( 'eo_posterboard', EVENT_ORGANISER_POSTERBOARD_URL."js/event-board{$ext}.js", array( 'jquery', 'jquery-masonry' ), $ver );	
+}
+add_action( 'init', 'eventorganiser_posterboard_register_scripts' );
+
 
 function eventorganiser_posterboard_shortcode_handler( $atts = array() ){
 	
@@ -58,10 +71,8 @@ function eventorganiser_posterboard_shortcode_handler( $atts = array() ){
 	ob_end_clean();
 	
 	//Load & 'localize' script
-	$ext = (defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG) ? '' : '.min';
-	$ver = EVENT_ORGANISER_POSTERBOARD_VER;
-	wp_enqueue_script( 'eo_posterboard', EVENT_ORGANISER_POSTERBOARD_URL."js/event-board{$ext}.js", array( 'jquery', 'jquery-masonry' ), $ver );
-	wp_enqueue_style( 'eo_posterboard', EVENT_ORGANISER_POSTERBOARD_URL.'css/event-board.css', array(), $ver );
+	wp_enqueue_script( 'eo_posterboard' );
+	wp_enqueue_style( 'eo_posterboard' );
 	wp_localize_script( 'eo_posterboard', 'eventorganiser_posterboard',
 		array(
 			'url'       => admin_url( 'admin-ajax.php' ),
