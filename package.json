@@ -1,6 +1,6 @@
 {
   "name": "event-organiser-posterboard",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "Adds an 'event board' to display your events in a a responsive posterboard.",
   "main": "Gruntfile.js",
   "author": "Stephen Harris",
