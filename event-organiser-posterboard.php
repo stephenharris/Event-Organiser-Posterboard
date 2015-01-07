@@ -2,14 +2,12 @@
 /*
 Plugin Name: Event Organiser Posterboard
 Plugin URI: http://www.wp-event-organiser.com
-Version: 1.0.2
+Version: 1.1.0
 Description: Display events in as a responsive posterboard.
 Author: Stephen Harris
 Author URI: http://www.stephenharris.info
 Text Domain: event-organiser-posterboard
 Domain Path: /languages
-
-
 */
 /*  Copyright 2013 Stephen Harris (contact@stephenharris.info)
 
@@ -28,7 +26,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 */
 
-define( 'EVENT_ORGANISER_POSTERBOARD_VER', '1.0.2' );
+define( 'EVENT_ORGANISER_POSTERBOARD_VER', '1.1.0' );
 define( 'EVENT_ORGANISER_POSTERBOARD_DIR',plugin_dir_path(__FILE__ ) );
 function _eventorganiser_posterboard_set_constants(){
 	/*
@@ -164,23 +162,47 @@ add_shortcode( 'event_board', 'eventorganiser_posterboard_shortcode_handler' );
 
 function eventorganiser_posterboard_ajax_response(){
 
-	$page = $_GET['page'];
+	$page  = isset( $_GET['page'] ) ? (int) $_GET['page'] : 1;
+	$query = empty( $_GET['query'] ) ? array() : $_GET['query'];
+
+
+	foreach ( array( 'category', 'tag', 'venue' ) as $tax ){
+		if( isset( $query['event_'.$tax] ) ){
+			$query['event-'.$tax] = $query['event_'.$tax];
+			unset( $query['event_'.$tax] );
+		}
+	}
+	
+	if( isset( $query['event-venue'] ) && $query['event-venue']== '%this%' ){
+		if( eo_get_venue_slug() ){
+			$query['event-venue'] = eo_get_venue_slug();
+		}else{
+			unset( $query['event-venue'] );
+		}
+	}
+	
+	if( isset( $query['users_events'] ) && strtolower( $query['users_events'] ) == 'true' ){
+		$query['bookee_id'] = get_current_user_id();
+	}
+
 	
 	$query = array_merge( 
 		array(
 			'event_start_after' => 'today',
 			'posts_per_page'    => 10,
 		),
-		$_GET['query'],
+		$query,
 		array(
 			'post_type'         => 'event',
 			'paged'             => $page,
-			'post_status'       => get_post_stati( array('public' => true) )
+			//'post_status'       => true,//get_post_stati( array('public' => true) )
+			'post_status'       => array( 'publish', 'private' ), 
+			'perm'              => 'readable'
 		)
 	);
 	
 	$event_query = new WP_Query( $query );
-
+	
 	$response = array();
 	if( $event_query->have_posts() ){
 		
