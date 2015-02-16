@@ -2,7 +2,7 @@
 /*
 Plugin Name: Event Organiser Posterboard
 Plugin URI: http://www.wp-event-organiser.com
-Version: 1.1.0
+Version: 2.0.0-beta
 Description: Display events in as a responsive posterboard.
 Author: Stephen Harris
 Author URI: http://www.stephenharris.info
@@ -26,7 +26,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 */
 
-define( 'EVENT_ORGANISER_POSTERBOARD_VER', '1.1.0' );
+define( 'EVENT_ORGANISER_POSTERBOARD_VER', '2.0.0-beta' );
 define( 'EVENT_ORGANISER_POSTERBOARD_DIR', plugin_dir_path( __FILE__ ) );
 function _eventorganiser_posterboard_set_constants(){
 	/*
@@ -242,17 +242,19 @@ function eventorganiser_posterboard_ajax_response(){
 			$thumbnail_html = get_the_post_thumbnail( get_the_ID(), array( '200', '200' ), array( 'class' => 'aligncenter' ) );
 			$thumbnail      = array();
 			if( $thumbnail_html ){
-				$doc = new DOMDocument();
-				$doc->loadHTML( "<html><body>$thumbnail</body></html>" );
-				$xml = simplexml_import_dom( $doc );
-				$images = $xml->xpath( '//img' );
-				foreach( $images as $img ){
-					var_dump( $img );
-					$thumbnail = array(
-						'src'    => $img['src'],
-						'width'  => $img['width'],
-						'height' => $img['height'],
-					);
+				if( class_exists( 'DOMDocument' ) ){
+					$doc = new DOMDocument();
+					$doc->loadHTML( "<html><body>$thumbnail_html</body></html>" );
+					$xml = simplexml_import_dom( $doc );
+					$images = $xml->xpath( '//img' );
+					foreach( $images as $img ){
+						$thumbnail = array(
+							'src'    => (string) $img['src'],
+							'width'  => (int) $img['width'],
+							'height' => (int) $img['height'],
+						);
+						
+					}
 				}
 				$thumbnail['width'] = empty( $thumbnail['width'] ) ? 200 : $thumbnail['width'];
 				$thumbnail['height'] = empty( $thumbnail['height'] ) ? 200 : $thumbnail['height'];
