@@ -238,6 +238,28 @@ function eventorganiser_posterboard_ajax_response(){
 			$colour     = ( eo_get_event_color() ? eo_get_event_color() : '#1e8cbe' );
 			$address    = eo_get_venue_address( $venue_id );
 			
+			//Get the thumbnail HTML then try to extract the final width/height/src attributes to populate $thumbnail
+			//$thumbnail is used to set the dimensions of the thumbnail wrapper.
+			//@see http://stackoverflow.com/questions/12093378/jquery-masonry-and-ajax-fetching-to-append-items-causing-image-overlap 
+			$thumbnail_html = get_the_post_thumbnail( get_the_ID(), array( '200', '200' ), array( 'class' => 'aligncenter' ) );
+			$thumbnail      = array();
+			if( $thumbnail_html ){
+				$doc = new DOMDocument();
+				$doc->loadHTML( "<html><body>$thumbnail</body></html>" );
+				$xml = simplexml_import_dom( $doc );
+				$images = $xml->xpath( '//img' );
+				foreach( $images as $img ){
+					var_dump( $img );
+					$thumbnail = array(
+						'src'    => $img['src'],
+						'width'  => $img['width'],
+						'height' => $img['height'],
+					);
+				}
+				$thumbnail['width'] = empty( $thumbnail['width'] ) ? 200 : $thumbnail['width'];
+				$thumbnail['height'] = empty( $thumbnail['height'] ) ? 200 : $thumbnail['height'];
+			}
+			
 			$event = array(
 				'event_id'             => get_the_ID(),
 				'occurrence_id'       => $post->occurrence_id,
@@ -247,7 +269,8 @@ function eventorganiser_posterboard_ajax_response(){
 				'event_start_day'     => eo_get_the_start( 'j'),
 				'event_start_month'   => eo_get_the_start( 'M' ),
 				'event_content'       => get_the_excerpt(),
-				'event_thumbnail'     => get_the_post_thumbnail( get_the_ID(), array( '200', '200' ), array( 'class' => 'aligncenter' ) ),
+				'event_thumbnail'     => $thumbnail_html,
+				'thumbnail'           => $thumbnail,
 				'event_permalink'     => get_permalink(),
 				'event_categories'    => get_the_term_list( get_the_ID(),'event-category', '#', ', #', '' ),
 				'event_venue'         => ( $venue_id ? eo_get_venue_name( $venue_id ) : false ),
