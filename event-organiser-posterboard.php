@@ -209,9 +209,9 @@ function eventorganiser_posterboard_ajax_response(){
 		array(
 			'post_type'         => 'event',
 			'paged'             => $page,
-			//'post_status'       => true,//get_post_stati( array('public' => true) )
-			'post_status'       => array( 'publish', 'private' ), 
-			'perm'              => 'readable'
+			'post_status'       => array( 'publish', 'private' ),
+			'perm'              => 'readable',
+			'supress_filters'   => false,
 		)
 	);
 	
