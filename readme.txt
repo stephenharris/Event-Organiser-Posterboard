@@ -3,8 +3,8 @@ Contributors: stephenharris
 Donate link: http://www.wp-event-organiser.com/donate
 Tags: events, event, posterboard, responsive, event-organiser, grid
 Requires at least: 3.3
-Tested up to: 4.1.0
-Stable tag: 1.1.0
+Tested up to: 4.1.1
+Stable tag: 2.0.0
 License: GPLv3
 
 Adds an 'event board' to display your events in a responsive posterboard.
@@ -95,6 +95,12 @@ performance of some features if you do not provide your own styling in your them
 
 == Changelog ==
 
+= 2.0.0 =
+* **Breaking change** (for those using customised templates): `<%= event_content %>` now displays the event 
+content *not* excerpt. Use `<%= event_excerpt %>` instead.
+* Fixes grid not refreshed after images loaded (can cause board items to overlap).
+* Fixes `suppress_filters` not set to false in query. 
+
 = 1.1.0 =
 * Supports query arguments. E.g. [event_board event_start_after="now" event_start_before="+1 week"]. See readme for details.
 * Allows stylesheet to be replaced/disabled (see FAQ)
@@ -116,6 +122,6 @@ Initial release
 
 == Upgrade Notice ==
 
-If you have edited the template or added any styling, please note this update changes the classes used. 
+If you have edited the template please note the change in template tags.
 
 
