@@ -2,7 +2,7 @@
 /*
 Plugin Name: Event Organiser Posterboard
 Plugin URI: http://www.wp-event-organiser.com
-Version: 2.0.0-beta
+Version: 2.0.0
 Description: Display events in as a responsive posterboard.
 Author: Stephen Harris
 Author URI: http://www.stephenharris.info
@@ -26,7 +26,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 */
 
-define( 'EVENT_ORGANISER_POSTERBOARD_VER', '2.0.0-beta' );
+define( 'EVENT_ORGANISER_POSTERBOARD_VER', '2.0.0' );
 define( 'EVENT_ORGANISER_POSTERBOARD_DIR', plugin_dir_path( __FILE__ ) );
 function _eventorganiser_posterboard_set_constants(){
 	/*
