@@ -236,7 +236,11 @@ jQuery(document).ready(function ($) {
 					.removeClass("eo-eb-event-box masonry-brick masonry-brick")
 					.addClass('eo-eb-event-box-hidden');
 			}
-			$container.masonry( 'reload' );
+			
+			$container.imagesLoaded( function() {
+                $container.masonry( 'reload' );
+            });
+			
 		});
 	}
 });
