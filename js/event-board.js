@@ -178,8 +178,8 @@ jQuery(document).ready(function ($) {
 			$container.append(html);
 		}
 		
-		//If there are less than 10 events, then we won't need this...
-		if( events.length < 10 ){
+		//If there are less than query.posts_per_page events, then we won't need this...
+		if( events.length < eventorganiser_posterboard.query.posts_per_page ){
 			$('#event-board-more').hide();
 		}
 
@@ -217,7 +217,7 @@ jQuery(document).ready(function ($) {
 				var event = events[i];
 				html += event_board_template( event );
 			}
-			if( events.length < 10 ){
+			if( events.length < eventorganiser_posterboard.query.posts_per_page ){
 				$('#event-board-more').hide();
 			}
 

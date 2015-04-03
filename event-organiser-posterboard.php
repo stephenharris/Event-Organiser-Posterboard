@@ -64,6 +64,8 @@ function eventorganiser_posterboard_shortcode_handler( $atts = array() ){
 	$query    = array_diff_key( (array) $atts, $defaults );
 	$atts     = shortcode_atts( $defaults, $atts );
 	
+	$query = array_merge( array( 'posts_per_page' => 10 ), $query );
+	
 	//Get template
 	ob_start();
 	eo_locate_template( 'single-event-board-item.html', true, false );
