@@ -4,14 +4,14 @@ Donate link: http://www.wp-event-organiser.com/donate
 Tags: events, event, posterboard, responsive, event-organiser, grid
 Requires at least: 3.3
 Tested up to: 4.1.1
-Stable tag: 2.0.0
+Stable tag: 2.0.1
 License: GPLv3
 
 Adds an 'event board' to display your events in a responsive posterboard.
 
 == Description ==
 
-Further documentation can be found at [http://docs.wp-event-organiser.com/shortcodes/posterboard/](http://docs.wp-event-organiser.com/shortcodes/posterboard/).
+**Further documentation can be found at [http://docs.wp-event-organiser.com/shortcodes/posterboard/](http://docs.wp-event-organiser.com/shortcodes/posterboard/).**
 
 = Basic Usage =
 
@@ -29,6 +29,14 @@ For example, to show events only for category "foobar":
 To show events starting in the comming 7 days
 
      [event_board event_category="foobar"]
+     
+**Most** arguments supported by the `[eo_events]` (see [documentation](http://docs.wp-event-organiser.com/shortcodes/events-list/)) shortcode will also work with 
+posterboard. Please note that `posts_per_page` should be used instead of 
+`numberposts` and the `no_events` attributes is **not** supported.
+
+E.g. to show events which *start* this week (week starting Monday), three at a time:
+
+     [event_board event_start_after="monday this week" event_start_before="sunday this week" posts_per_page=3]
 
 = Filters =
 
@@ -94,6 +102,9 @@ performance of some features if you do not provide your own styling in your them
 
 
 == Changelog ==
+
+= 2.0.1 - 6th April 2015 =
+* Fixed bug with `posts_per_page` attribute
 
 = 2.0.0 =
 * **Breaking change** (for those using customised templates): `<%= event_content %>` now displays the event 
