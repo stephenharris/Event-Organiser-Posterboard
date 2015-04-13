@@ -207,11 +207,12 @@ function eventorganiser_posterboard_ajax_response(){
 		),
 		$query,
 		array(
-			'post_type'         => 'event',
-			'paged'             => $page,
-			'post_status'       => array( 'publish', 'private' ),
-			'perm'              => 'readable',
-			'supress_filters'   => false,
+			'post_type'       => 'event',
+			'paged'           => $page,
+			'post_status'     => array( 'publish', 'private' ),
+			'perm'            => 'readable',
+			'supress_filters' => false,
+			'context'         => 'eo-posterboard',
 		)
 	);
 	
