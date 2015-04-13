@@ -214,6 +214,9 @@ function eventorganiser_posterboard_ajax_response(){
 			'supress_filters'   => false,
 		)
 	);
+		
+	// Allow filtering of query arguments
+	$query = apply_filters( 'eventorganiser_posterboard_query_args', $query );
 	
 	$event_query = new WP_Query( $query );
 	
