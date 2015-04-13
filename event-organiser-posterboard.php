@@ -216,6 +216,8 @@ function eventorganiser_posterboard_ajax_response(){
 		)
 	);
 	
+	$query = apply_filters( 'eventorganiser_posterboard_query', $query ); 
+	
 	$event_query = new WP_Query( $query );
 	
 	$response = array();
