@@ -1,6 +1,6 @@
 {
   "name": "event-organiser-posterboard",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "description": "Adds an 'event board' to display your events in a a responsive posterboard.",
   "main": "Gruntfile.js",
   "author": "Stephen Harris",
@@ -23,7 +23,7 @@
     "grunt-newer": "~0.5.4",
     "grunt-po2mo": "~0.1.0",
     "grunt-pot": "~0.1.0",
-    "grunt-wp-deploy": "~0.2.0",
+    "grunt-wp-deploy": "stephenharris/grunt-wp-deploy#develop",
     "grunt-wp-readme-to-markdown": "~0.6.0",
     "jshint-stylish": "~0.1.3",
     "load-grunt-tasks": "~0.2.0"

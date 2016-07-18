@@ -3,8 +3,8 @@ Contributors: stephenharris
 Donate link: http://www.wp-event-organiser.com/donate
 Tags: events, event, posterboard, responsive, event-organiser, grid
 Requires at least: 3.3
-Tested up to: 4.1.1
-Stable tag: 2.0.1
+Tested up to: 4.5.3
+Stable tag: 2.1.0
 License: GPLv3
 
 Adds an 'event board' to display your events in a responsive posterboard.
@@ -102,6 +102,12 @@ performance of some features if you do not provide your own styling in your them
 
 
 == Changelog ==
+
+= 2.1.0 - 18th July 2016 =
+* Added support for translations
+* Added filter for the posterboard query and added context attribute
+* The featured image now links to the event
+* Added French translation
 
 = 2.0.1 - 6th April 2015 =
 * Fixed bug with `posts_per_page` attribute
