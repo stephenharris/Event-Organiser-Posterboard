@@ -211,7 +211,7 @@ jQuery(document).ready(function ($) {
 				query: eventorganiser_posterboard.query
 			}
 		}).done(function ( events ) {
-			$('#event-board-more').text('Load more');
+			$('#event-board-more').text(eventorganiser_posterboard.load_more);
 			var html = '';
 			for( var i=0; i< events.length; i++ ){
 				var event = events[i];
