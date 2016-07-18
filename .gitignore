@@ -7,5 +7,7 @@ build
 node_modules
 /.aws.json
 *.min.js
+*.min.css
 *.md
 *.pot
+*.mo
