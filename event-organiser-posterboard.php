@@ -44,6 +44,11 @@ function eventorganiser_posterboard_register_stack( $stacks ){
 }
 add_filter( 'eventorganiser_template_stack', 'eventorganiser_posterboard_register_stack' );
 
+function eventorganiser_posterboard_load_textdomain() {
+	load_plugin_textdomain( 'event-organiser-posterboard', false, basename( dirname( __FILE__ ) ).'/languages' );
+}
+add_action( 'plugins_loaded', 'eventorganiser_posterboard_load_textdomain' );
+
 function eventorganiser_posterboard_register_styles(){
 	$ver = EVENT_ORGANISER_POSTERBOARD_VER;
 	wp_register_style( 'eo_posterboard', EVENT_ORGANISER_POSTERBOARD_URL.'css/event-board.css', array(), $ver );
