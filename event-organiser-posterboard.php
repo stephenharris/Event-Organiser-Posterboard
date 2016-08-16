@@ -58,25 +58,25 @@ add_action( 'init', 'eventorganiser_posterboard_register_styles' );
 function eventorganiser_posterboard_register_scripts(){
 	$ext = (defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG) ? '' : '.min';
 	$ver = EVENT_ORGANISER_POSTERBOARD_VER;
-	wp_register_script( 'eo_posterboard', EVENT_ORGANISER_POSTERBOARD_URL."js/event-board{$ext}.js", array( 'jquery', 'jquery-masonry' ), $ver );	
+	wp_register_script( 'eo_posterboard', EVENT_ORGANISER_POSTERBOARD_URL."js/event-board{$ext}.js", array( 'jquery', 'jquery-masonry' ), $ver );
 }
 add_action( 'init', 'eventorganiser_posterboard_register_scripts' );
 
 
 function eventorganiser_posterboard_shortcode_handler( $atts = array() ){
-	
+
 	$defaults = array( 'filters' => '' );
 	$query    = array_diff_key( (array) $atts, $defaults );
 	$atts     = shortcode_atts( $defaults, $atts );
-	
+
 	$query = array_merge( array( 'posts_per_page' => 10 ), $query );
-	
+
 	//Get template
 	ob_start();
 	eo_locate_template( 'single-event-board-item.html', true, false );
 	$template = ob_get_contents();
 	ob_end_clean();
-	
+
 	//Load & 'localize' script
 	if( !eventorganiser_get_option( 'disable_css' ) ){
 		wp_enqueue_style( 'eo_posterboard' );
@@ -92,25 +92,25 @@ function eventorganiser_posterboard_shortcode_handler( $atts = array() ){
 			'query'     => $query,
 		)
 	);
-	
+
 	//Handle filters
 	$filters = explode( ',', $atts['filters'] );
 	$filers_markup = '';
-	
+
 	$venues = eo_get_venues();
 	$cats = get_terms( array( 'event-category' ), array( 'hide_empty' => false ) );
 
 	//'state'/'country'/'city' functions only available in Pro
 	$is_pro_active = in_array( 'event-organiser-pro/event-organiser-pro.php', (array) get_option( 'active_plugins', array() ) );
-	
+
 	if( $filters ):
-	
+
 		foreach( $filters as $filter ){
-		
+
 			$filter = strtolower( trim( $filter ) );
-		
+
 			switch( $filter ){
-	
+
 				case 'venue':
 					if( $venues ){
 						foreach( $venues as $venue ){
@@ -122,7 +122,7 @@ function eventorganiser_posterboard_shortcode_handler( $atts = array() ){
 						}
 					}
 				break;
-		
+
 				case 'category':
 					if( $cats ){
 						foreach( $cats as $cat ){
@@ -139,16 +139,16 @@ function eventorganiser_posterboard_shortcode_handler( $atts = array() ){
 						__( 'Uncategorised', 'event-organiser-posterboard' )
 					);
 				break;
-			
+
 				case 'city':
 				case 'state':
 				case 'country':
-				
+
 					//If Pro isn't active, this won't work
 					if( !$is_pro_active ){
 						break;
 					}
-				
+
 					if( 'city' == $filter ){
 						$terms = eo_get_venue_cities();
 					}elseif( 'state' == $filter ){
@@ -156,7 +156,7 @@ function eventorganiser_posterboard_shortcode_handler( $atts = array() ){
 					}else{
 						$terms  = eo_get_venue_countries();
 					}
-				
+
 					if( $terms ){
 						foreach( $terms as $term ){
 							$filers_markup .= sprintf(
@@ -164,19 +164,21 @@ function eventorganiser_posterboard_shortcode_handler( $atts = array() ){
 								$filter,
 								$term
 							);
-						}						
+						}
 					}
 				break;
 			};
 		}
 	endif;
-	
-	return
-		'<div id="event-board">' 
-			.'<div id="event-board-filters" data-filters="">'. $filers_markup . '</div>'  
-			.'<div id="event-board-items"></div>'
-			.'<div id="event-board-more"></div>'
-		.'</div>';
+
+	return sprintf(
+		'<div class="eo-event-board" data-board="%s">'
+			.'<div class="eo-event-board-filters" data-filters="">'. $filers_markup . '</div>'
+			.'<div class="eo-event-board-items"></div>'
+			.'<div class="eo-event-board-more"></div>'
+		.'</div>',
+		esc_attr( uniqid( 'eo-event-board' ) )
+	);
 }
 add_shortcode( 'event_board', 'eventorganiser_posterboard_shortcode_handler' );
 
@@ -192,7 +194,7 @@ function eventorganiser_posterboard_ajax_response(){
 			unset( $query['event_'.$tax] );
 		}
 	}
-	
+
 	if( isset( $query['event-venue'] ) && '%this%' == $query['event-venue'] ){
 		if( eo_get_venue_slug() ){
 			$query['event-venue'] = eo_get_venue_slug();
@@ -200,12 +202,12 @@ function eventorganiser_posterboard_ajax_response(){
 			unset( $query['event-venue'] );
 		}
 	}
-	
+
 	if( isset( $query['users_events'] ) && 'true' == strtolower( $query['users_events'] ) ){
 		$query['bookee_id'] = get_current_user_id();
 	}
-	
-	$query = array_merge( 
+
+	$query = array_merge(
 		array(
 			'event_start_after' => 'today',
 			'posts_per_page'    => 10,
@@ -220,32 +222,32 @@ function eventorganiser_posterboard_ajax_response(){
 			'context'         => 'eo-posterboard',
 		)
 	);
-	
-	$query = apply_filters( 'eventorganiser_posterboard_query', $query ); 
-	
+
+	$query = apply_filters( 'eventorganiser_posterboard_query', $query );
+
 	$event_query = new WP_Query( $query );
-	
+
 	$response = array();
 	if( $event_query->have_posts() ){
-		
+
 		global $post;
-		
+
 		while( $event_query->have_posts() ){
-			
+
 			$event_query->the_post();
 			$start_format = get_option( 'time_format' );
-			
+
 			if( eo_get_the_start( 'Y-m-d' ) == eo_get_the_end( 'Y-m-d' )  ){
 				$end_format = get_option( 'time_format' );
 			}else{
 				$end_format = 'j M '.get_option( 'time_format' );
 			}
-			
+
 			$venue_id   = eo_get_venue();
 			$categories = get_the_terms( get_the_ID(), 'event-category' );
 			$colour     = ( eo_get_event_color() ? eo_get_event_color() : '#1e8cbe' );
 			$address    = eo_get_venue_address( $venue_id );
-			
+
 			$event = array(
 				'event_id'             => get_the_ID(),
 				'occurrence_id'       => $post->occurrence_id,
@@ -266,17 +268,17 @@ function eventorganiser_posterboard_ajax_response(){
 				'event_venue_country' => ( $venue_id ? $address['country'] : false ),
 				'event_venue_url'     => ( $venue_id ? eo_get_venue_link( $venue_id ) : false ),
 				'event_is_all_day'    => eo_is_all_day(),
-				'event_cat_ids'       => $categories ? array_values( wp_list_pluck( $categories, 'term_id' ) ) : array( 0 ), 
+				'event_cat_ids'       => $categories ? array_values( wp_list_pluck( $categories, 'term_id' ) ) : array( 0 ),
 				'event_range'         => eo_get_the_start( $start_format ) . ' - ' . eo_get_the_end( $end_format ),
 			);
-			
+
 			$event = apply_filters( 'eventorganiser_posterboard_item', $event, $event['event_id'], $event['occurrence_id'] );
 			$response[] = $event;
 		}
 	}
 
 	wp_reset_postdata();
-	
+
 	echo json_encode( $response );
 	exit;
 }
