@@ -21,10 +21,14 @@ if (!Array.prototype.indexOf){
 	};
 }
 
-function EOPosterBoard ($el, template) {
+function EOPosterBoard ($el, options) {
     this.$el = $el;
-		this.template = this._createTemplateFunction( template );
+		this.template = this._createTemplateFunction( options.template );
 		this.page = 0;
+		this.reversed = options.reversed
+		if ( this.reversed ){
+			this.$el.addClass( 'eo-event-board-reversed' );
+		}
 }
 
 EOPosterBoard.prototype.init = function() {
@@ -75,9 +79,12 @@ EOPosterBoard.prototype.fetchEvents = function() {
 
 		var activeFilters = self.getActiveFilters();
 		if( activeFilters.length > 0 ){
-			var select = '.'+activeFilters.join(', .');
-			$container.find( select )
-				.css({'visibility': 'hidden', 'display': 'none'})
+			if ( self.reversed ) {
+				$hide = $container.find( '.'+activeFilters.join(', .') );
+			} else {
+				$hide = self.$el.find( '.eo-eb-event-box' ).not( '.'+activeFilters.join('.') )
+			}
+			$hide.css({'visibility': 'hidden', 'display': 'none'})
 				.removeClass("eo-eb-event-box masonry-brick masonry-brick")
 				.addClass('eo-eb-event-box-hidden');
 		}
@@ -129,9 +136,14 @@ EOPosterBoard.prototype.toggleFilter = function( filter ) {
 		//Add filter
 		activeFilters.push( filter );
 
-		//Apply filter by hiding all elements of that class
-		this.$el.find( '.'+filter)
-			.css({'visibility': 'hidden', 'display': 'none'})
+		if ( this.reversed ) {
+			//Apply filter by hiding all elements of that class
+			$hide = this.$el.find( '.'+filter );
+		} else {
+			$hide = this.$el.find( '.eo-eb-event-box' ).not( '.'+activeFilters.join('.') )
+		}
+
+		$hide.css({'visibility': 'hidden', 'display': 'none'})
 			.removeClass("eo-eb-event-box masonry-brick masonry-brick")
 			.addClass('eo-eb-event-box-hidden');
 
@@ -145,15 +157,21 @@ EOPosterBoard.prototype.toggleFilter = function( filter ) {
 		// events of that type, unless it is hidden by another applied filter.
 
 		if( activeFilters.length > 0 ){
-			//Find events which are
-			this.$el.find( '.'+filter)
-				.not( '.'+activeFilters.join(', .') )
-				.css({'visibility': 'visible', 'display': 'block'})
+
+			if ( this.reversed ) {
+				//Apply filter by hiding all elements of that class
+				$show = this.$el.find( '.'+filter).not( '.'+activeFilters.join(', .') );
+			} else {
+				$show = this.$el.find( '.eo-eb-event-box-hidden.'+activeFilters.join('.') );
+			}
+
+			$show.css({'visibility': 'visible', 'display': 'block'})
 				.addClass("eo-eb-event-box masonry-brick masonry-brick")
 				.removeClass('eo-eb-event-box-hidden');
+
 		}else{
 			//If this filter was the last active one. Just show all the events
-			this.$el.find( '.'+filter)
+			this.$el.find( '.eo-eb-event-box-hidden' )
 				.css({'visibility': 'visible', 'display': 'block'})
 				.addClass("eo-eb-event-box masonry-brick masonry-brick")
 				.removeClass('eo-eb-event-box-hidden');
@@ -167,7 +185,7 @@ EOPosterBoard.prototype.toggleFilter = function( filter ) {
 	var filterClass = filter.replace( 'eo-eb-', 'eo-eb-filter-' );
 	this.$el.find( '.eo-event-board-filters .'+filterClass ).toggleClass( 'eo-eb-filter-on', ! isActive );
 
-	this.$el.find('.eo-event-board-items').masonry('reload');
+	this.$el.find('.eo-event-board-items').masonry('reloadItems').masonry('layout');
 };
 
 EOPosterBoard.prototype._onClickMore = function() {
@@ -256,7 +274,10 @@ EOPosterBoard.prototype._createTemplateFunction = function( text ) {
 
 $(document).ready(function () {
 	$('.eo-event-board').each(function() {
-			var posterboard = new EOPosterBoard( $(this), eventorganiser_posterboard.template );
+			var posterboard = new EOPosterBoard( $(this), {
+				reversed: false,
+				template: eventorganiser_posterboard.template
+			} );
 			posterboard.hook();
 			posterboard.init();
 	} );

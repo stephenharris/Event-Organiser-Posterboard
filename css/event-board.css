@@ -1,5 +1,8 @@
 .eo-eb-filter{ background:#ececec ; display:inline-block; margin:5px; padding:3px; }
-.eo-eb-filter.eo-eb-filter-on{ opacity:0.5; }
+.eo-eb-filter{ opacity:0.5; }
+.eo-eb-filter.eo-eb-filter-on{ opacity:1; }
+.eo-event-board-reversed .eo-eb-filter{ opacity:1; }
+.eo-event-board-reversed .eo-eb-filter.eo-eb-filter-on{ opacity:0.5; }
 .eo-event-board-items { margin: auto; }
 .eo-event-board-items .eo-eb-event-box{z-index: 2;}
 .eo-event-board-items .eo-eb-event-box-hidden{pointer-events: none;z-index: 1;}
