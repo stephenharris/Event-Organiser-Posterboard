@@ -58,7 +58,7 @@ add_action( 'init', 'eventorganiser_posterboard_register_styles' );
 function eventorganiser_posterboard_register_scripts(){
 	$ext = (defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG) ? '' : '.min';
 	$ver = EVENT_ORGANISER_POSTERBOARD_VER;
-	wp_register_script( 'eo_posterboard', EVENT_ORGANISER_POSTERBOARD_URL."js/event-board{$ext}.js", array( 'jquery', 'jquery-masonry' ), $ver );
+	wp_register_script( 'eo_posterboard', EVENT_ORGANISER_POSTERBOARD_URL."js/event-board{$ext}.js", array( 'jquery', 'masonry' ), $ver );
 }
 add_action( 'init', 'eventorganiser_posterboard_register_scripts' );
 

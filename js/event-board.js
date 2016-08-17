@@ -38,7 +38,6 @@ EOPosterBoard.prototype.init = function() {
 		isFitWidth: true,
 		itemSelector : '.eo-eb-event-box',
 		isAnimatedFromBottom: true,
-		isAnimated: true,
 		singleMode: true,
 		layoutPriorities: {
 			shelfOrder: 0
@@ -93,7 +92,7 @@ EOPosterBoard.prototype.addEvents = function( events ) {
 	}
 	$container.append( $(html) ).masonry( 'appended', $(html), true );
 	$container.imagesLoaded( function() {
-		$container.masonry( 'reload' );
+		$container.masonry('reloadItems').masonry('layout');
 	});
 },
 
@@ -167,7 +166,7 @@ EOPosterBoard.prototype.toggleFilter = function( filter ) {
 	var filterClass = filter.replace( 'eo-eb-', 'eo-eb-filter-' );
 	this.$el.find( '.eo-event-board-filters .'+filterClass ).toggleClass( 'eo-eb-filter-on', ! isActive );
 
-	this.$el.find('.eo-event-board-items').masonry('reload');
+	this.$el.find('.eo-event-board-items').masonry('reloadItems').masonry('layout');
 };
 
 EOPosterBoard.prototype._onClickMore = function() {
