@@ -21,10 +21,16 @@ if (!Array.prototype.indexOf){
 	};
 }
 
-function EOPosterBoard ($el, template) {
+function EOPosterBoard ($el, options) {
     this.$el = $el;
-		this.template = this._createTemplateFunction( template );
+		this.template = this._createTemplateFunction( options.template );
 		this.page = 0;
+		this.url = options.url;
+		this.i18n = {
+			loading: options.loading,
+			load_more: options.load_more
+		}
+		this.query = options.query
 }
 
 EOPosterBoard.prototype.init = function() {
@@ -32,7 +38,7 @@ EOPosterBoard.prototype.init = function() {
 	$container = this.$el.find('.eo-event-board-items');
 	var width = $container.width();
 
-	this.setMoreText( eventorganiser_posterboard.loading );
+	this.setMoreText( this.i18n.loading );
 
 	$container.masonry({
 		isFitWidth: true,
@@ -55,23 +61,23 @@ EOPosterBoard.prototype.fetchEvents = function() {
 	var $container = this.$el.find('.eo-event-board-items');
 
 	$.ajax({
-		url: eventorganiser_posterboard.url,
+		url: this.url,
 		dataType: 'json',
 		data:{
 			action: 'eventorganiser-posterboard',
 			page: this.page,
-			query: eventorganiser_posterboard.query
+			query: this.query
 		}
 	}).done(function ( events ) {
 
 		self.addEvents( events );
 
 		//If there are less than query.posts_per_page events, then we won't need this...
-		if( events.length < eventorganiser_posterboard.query.posts_per_page ){
+		if( events.length < this.query.posts_per_page ){
 			self.$el.find('.eo-event-board-more').hide();
 		}
 
-		self.setMoreText( eventorganiser_posterboard.load_more );
+		self.setMoreText( this.i18n.load_more );
 
 		var activeFilters = self.getActiveFilters();
 		if( activeFilters.length > 0 ){
@@ -100,7 +106,6 @@ EOPosterBoard.prototype.addEvents = function( events ) {
 EOPosterBoard.prototype.hook = function() {
     this.$el.find('.eo-event-board-more').click( $.proxy( this._onClickMore, this ) );
 		this.$el.find('.eo-eb-filter').click( $.proxy( this._onToggleFilter, this ) );
-		//hook filters').
 };
 
 EOPosterBoard.prototype.setMoreText = function( text ) {
@@ -256,9 +261,17 @@ EOPosterBoard.prototype._createTemplateFunction = function( text ) {
 
 $(document).ready(function () {
 	$('.eo-event-board').each(function() {
-			var posterboard = new EOPosterBoard( $(this), eventorganiser_posterboard.template );
-			posterboard.hook();
-			posterboard.init();
+		var id = $(this).data('board');
+		var options = window['eo_posterboard_' + id];
+		var posterboard = new EOPosterBoard( $(this), {
+			template: options.template,
+			query: options.query,
+			loading: options.loading,
+			load_more: options.load_more,
+			url: options.url
+		});
+		posterboard.hook();
+		posterboard.init();
 	} );
 });
 

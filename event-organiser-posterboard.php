@@ -68,6 +68,7 @@ function eventorganiser_posterboard_shortcode_handler( $atts = array() ){
 	$defaults = array( 'filters' => '' );
 	$query    = array_diff_key( (array) $atts, $defaults );
 	$atts     = shortcode_atts( $defaults, $atts );
+	$id       = uniqid();
 
 	$query = array_merge( array( 'posts_per_page' => 10 ), $query );
 
@@ -83,7 +84,7 @@ function eventorganiser_posterboard_shortcode_handler( $atts = array() ){
 	}
 	wp_enqueue_script( 'eo_posterboard' );
 
-	wp_localize_script( 'eo_posterboard', 'eventorganiser_posterboard',
+	wp_localize_script( 'eo_posterboard', 'eo_posterboard_' . $id,
 		array(
 			'url'       => admin_url( 'admin-ajax.php' ),
 			'loading'   => __( 'Loading...', 'event-organiser-posterboard' ),
@@ -177,7 +178,7 @@ function eventorganiser_posterboard_shortcode_handler( $atts = array() ){
 			.'<div class="eo-event-board-items"></div>'
 			.'<div class="eo-event-board-more"></div>'
 		.'</div>',
-		esc_attr( uniqid( 'eo-event-board' ) )
+		esc_attr( $id )
 	);
 }
 add_shortcode( 'event_board', 'eventorganiser_posterboard_shortcode_handler' );
