@@ -29,8 +29,8 @@ function EOPosterBoard ($el, options) {
 		this.i18n = {
 			loading: options.loading,
 			load_more: options.load_more
-		}
-		this.query = options.query
+		};
+		this.query = options.query;
 		this.reversed = options.reversed;
 		if ( this.reversed ){
 			this.$el.addClass( 'eo-event-board-reversed' );
@@ -57,7 +57,7 @@ EOPosterBoard.prototype.init = function() {
 
 	this.fetchEvents();
 
-}
+};
 
 EOPosterBoard.prototype.fetchEvents = function() {
 	this.page++;
@@ -88,14 +88,14 @@ EOPosterBoard.prototype.fetchEvents = function() {
 			if ( self.reversed ) {
 				$hide = $container.find( '.'+activeFilters.join(', .') );
 			} else {
-				$hide = self.$el.find( '.eo-eb-event-box' ).not( '.'+activeFilters.join('.') )
+				$hide = self.$el.find( '.eo-eb-event-box' ).not( '.'+activeFilters.join('.') );
 			}
 			$hide.css({'visibility': 'hidden', 'display': 'none'})
 				.removeClass("eo-eb-event-box masonry-brick masonry-brick")
 				.addClass('eo-eb-event-box-hidden');
 		}
 	});
-}
+};
 
 EOPosterBoard.prototype.addEvents = function( events ) {
 	$container = this.$el.find('.eo-event-board-items');
@@ -108,7 +108,7 @@ EOPosterBoard.prototype.addEvents = function( events ) {
 	$container.imagesLoaded( function() {
 		$container.masonry( 'reload' );
 	});
-},
+};
 
 EOPosterBoard.prototype.hook = function() {
     this.$el.find('.eo-event-board-more').click( $.proxy( this._onClickMore, this ) );
@@ -117,7 +117,7 @@ EOPosterBoard.prototype.hook = function() {
 
 EOPosterBoard.prototype.setMoreText = function( text ) {
 	this.$el.find('.eo-event-board-more').text( text );
-}
+};
 
 EOPosterBoard.prototype.getActiveFilters = function() {
 	var activeFilters = this.$el.find('.eo-event-board-filters').data('filters').split(',');
@@ -145,7 +145,7 @@ EOPosterBoard.prototype.toggleFilter = function( filter ) {
 			//Apply filter by hiding all elements of that class
 			$hide = this.$el.find( '.'+filter );
 		} else {
-			$hide = this.$el.find( '.eo-eb-event-box' ).not( '.'+activeFilters.join('.') )
+			$hide = this.$el.find( '.eo-eb-event-box' ).not( '.'+activeFilters.join('.') );
 		}
 
 		$hide.css({'visibility': 'hidden', 'display': 'none'})
@@ -195,7 +195,7 @@ EOPosterBoard.prototype.toggleFilter = function( filter ) {
 
 EOPosterBoard.prototype._onClickMore = function() {
 	this.fetchEvents();
-}
+};
 
 EOPosterBoard.prototype._onToggleFilter = function( ev ) {
 	ev.preventDefault();
@@ -205,7 +205,7 @@ EOPosterBoard.prototype._onToggleFilter = function( ev ) {
 	var value = $filter.data(type);
 	var filter = 'eo-eb-'+type + '-' + value;
 	this.toggleFilter( filter );
-}
+};
 
 EOPosterBoard.prototype._createTemplateFunction = function( text ) {
 
@@ -275,7 +275,7 @@ EOPosterBoard.prototype._createTemplateFunction = function( text ) {
 	};
 
 	return template;
-}
+};
 
 $(document).ready(function () {
 	$('.eo-event-board').each(function() {
