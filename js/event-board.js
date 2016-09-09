@@ -25,7 +25,7 @@ function EOPosterBoard ($el, options) {
     this.$el = $el;
 		this.template = this._createTemplateFunction( options.template );
 		this.page = 0;
-		this.reversed = options.reversed
+		this.reversed = options.reversed;
 		if ( this.reversed ){
 			this.$el.addClass( 'eo-event-board-reversed' );
 		}
@@ -275,7 +275,7 @@ EOPosterBoard.prototype._createTemplateFunction = function( text ) {
 $(document).ready(function () {
 	$('.eo-event-board').each(function() {
 			var posterboard = new EOPosterBoard( $(this), {
-				reversed: false,
+				reversed: +$(this).data('reversed'),
 				template: eventorganiser_posterboard.template
 			} );
 			posterboard.hook();
