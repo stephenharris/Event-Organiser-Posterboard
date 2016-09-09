@@ -65,10 +65,12 @@ add_action( 'init', 'eventorganiser_posterboard_register_scripts' );
 
 function eventorganiser_posterboard_shortcode_handler( $atts = array() ){
 
-	$defaults = array( 'filters' => '' );
+	$defaults = array( 'filters' => '', 'reversed' => false );
 	$query    = array_diff_key( (array) $atts, $defaults );
 	$atts     = shortcode_atts( $defaults, $atts );
 	$id       = uniqid();
+
+	$atts['reversed'] = ( 'false' === strtolower( $atts['reversed'] ) ? 0 : (bool) $atts['reversed'] );
 
 	$query = array_merge( array( 'posts_per_page' => 10 ), $query );
 
@@ -91,6 +93,7 @@ function eventorganiser_posterboard_shortcode_handler( $atts = array() ){
 			'load_more' => __( 'Load more', 'event-organiser-posterboard' ),
 			'template'  => $template,
 			'query'     => $query,
+			'reversed'  => (bool)$atts['reversed']
 		)
 	);
 
