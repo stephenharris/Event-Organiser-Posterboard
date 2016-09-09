@@ -21,10 +21,20 @@ if (!Array.prototype.indexOf){
 	};
 }
 
-function EOPosterBoard ($el, template) {
+function EOPosterBoard ($el, options) {
     this.$el = $el;
-		this.template = this._createTemplateFunction( template );
+		this.template = this._createTemplateFunction( options.template );
 		this.page = 0;
+		this.url = options.url;
+		this.i18n = {
+			loading: options.loading,
+			load_more: options.load_more
+		};
+		this.query = options.query;
+		this.reversed = options.reversed;
+		if ( this.reversed ){
+			this.$el.addClass( 'eo-event-board-reversed' );
+		}
 }
 
 EOPosterBoard.prototype.init = function() {
@@ -32,7 +42,7 @@ EOPosterBoard.prototype.init = function() {
 	$container = this.$el.find('.eo-event-board-items');
 	var width = $container.width();
 
-	this.setMoreText( eventorganiser_posterboard.loading );
+	this.setMoreText( this.i18n.loading );
 
 	$container.masonry({
 		isFitWidth: true,
@@ -46,7 +56,7 @@ EOPosterBoard.prototype.init = function() {
 
 	this.fetchEvents();
 
-}
+};
 
 EOPosterBoard.prototype.fetchEvents = function() {
 	this.page++;
@@ -54,34 +64,37 @@ EOPosterBoard.prototype.fetchEvents = function() {
 	var $container = this.$el.find('.eo-event-board-items');
 
 	$.ajax({
-		url: eventorganiser_posterboard.url,
+		url: this.url,
 		dataType: 'json',
 		data:{
 			action: 'eventorganiser-posterboard',
 			page: this.page,
-			query: eventorganiser_posterboard.query
+			query: this.query
 		}
 	}).done(function ( events ) {
 
 		self.addEvents( events );
 
 		//If there are less than query.posts_per_page events, then we won't need this...
-		if( events.length < eventorganiser_posterboard.query.posts_per_page ){
+		if( events.length < this.query.posts_per_page ){
 			self.$el.find('.eo-event-board-more').hide();
 		}
 
-		self.setMoreText( eventorganiser_posterboard.load_more );
+		self.setMoreText( this.i18n.load_more );
 
 		var activeFilters = self.getActiveFilters();
 		if( activeFilters.length > 0 ){
-			var select = '.'+activeFilters.join(', .');
-			$container.find( select )
-				.css({'visibility': 'hidden', 'display': 'none'})
+			if ( self.reversed ) {
+				$hide = $container.find( '.'+activeFilters.join(', .') );
+			} else {
+				$hide = self.$el.find( '.eo-eb-event-box' ).not( '.'+activeFilters.join('.') );
+			}
+			$hide.css({'visibility': 'hidden', 'display': 'none'})
 				.removeClass("eo-eb-event-box masonry-brick masonry-brick")
 				.addClass('eo-eb-event-box-hidden');
 		}
 	});
-}
+};
 
 EOPosterBoard.prototype.addEvents = function( events ) {
 	$container = this.$el.find('.eo-event-board-items');
@@ -94,17 +107,16 @@ EOPosterBoard.prototype.addEvents = function( events ) {
 	$container.imagesLoaded( function() {
 		$container.masonry('reloadItems').masonry('layout');
 	});
-},
+};
 
 EOPosterBoard.prototype.hook = function() {
     this.$el.find('.eo-event-board-more').click( $.proxy( this._onClickMore, this ) );
 		this.$el.find('.eo-eb-filter').click( $.proxy( this._onToggleFilter, this ) );
-		//hook filters').
 };
 
 EOPosterBoard.prototype.setMoreText = function( text ) {
 	this.$el.find('.eo-event-board-more').text( text );
-}
+};
 
 EOPosterBoard.prototype.getActiveFilters = function() {
 	var activeFilters = this.$el.find('.eo-event-board-filters').data('filters').split(',');
@@ -128,9 +140,14 @@ EOPosterBoard.prototype.toggleFilter = function( filter ) {
 		//Add filter
 		activeFilters.push( filter );
 
-		//Apply filter by hiding all elements of that class
-		this.$el.find( '.'+filter)
-			.css({'visibility': 'hidden', 'display': 'none'})
+		if ( this.reversed ) {
+			//Apply filter by hiding all elements of that class
+			$hide = this.$el.find( '.'+filter );
+		} else {
+			$hide = this.$el.find( '.eo-eb-event-box' ).not( '.'+activeFilters.join('.') );
+		}
+
+		$hide.css({'visibility': 'hidden', 'display': 'none'})
 			.removeClass("eo-eb-event-box masonry-brick masonry-brick")
 			.addClass('eo-eb-event-box-hidden');
 
@@ -144,15 +161,21 @@ EOPosterBoard.prototype.toggleFilter = function( filter ) {
 		// events of that type, unless it is hidden by another applied filter.
 
 		if( activeFilters.length > 0 ){
-			//Find events which are
-			this.$el.find( '.'+filter)
-				.not( '.'+activeFilters.join(', .') )
-				.css({'visibility': 'visible', 'display': 'block'})
+
+			if ( this.reversed ) {
+				//Apply filter by hiding all elements of that class
+				$show = this.$el.find( '.'+filter).not( '.'+activeFilters.join(', .') );
+			} else {
+				$show = this.$el.find( '.eo-eb-event-box-hidden.'+activeFilters.join('.') );
+			}
+
+			$show.css({'visibility': 'visible', 'display': 'block'})
 				.addClass("eo-eb-event-box masonry-brick masonry-brick")
 				.removeClass('eo-eb-event-box-hidden');
+
 		}else{
 			//If this filter was the last active one. Just show all the events
-			this.$el.find( '.'+filter)
+			this.$el.find( '.eo-eb-event-box-hidden' )
 				.css({'visibility': 'visible', 'display': 'block'})
 				.addClass("eo-eb-event-box masonry-brick masonry-brick")
 				.removeClass('eo-eb-event-box-hidden');
@@ -171,7 +194,7 @@ EOPosterBoard.prototype.toggleFilter = function( filter ) {
 
 EOPosterBoard.prototype._onClickMore = function() {
 	this.fetchEvents();
-}
+};
 
 EOPosterBoard.prototype._onToggleFilter = function( ev ) {
 	ev.preventDefault();
@@ -181,7 +204,7 @@ EOPosterBoard.prototype._onToggleFilter = function( ev ) {
 	var value = $filter.data(type);
 	var filter = 'eo-eb-'+type + '-' + value;
 	this.toggleFilter( filter );
-}
+};
 
 EOPosterBoard.prototype._createTemplateFunction = function( text ) {
 
@@ -251,13 +274,22 @@ EOPosterBoard.prototype._createTemplateFunction = function( text ) {
 	};
 
 	return template;
-}
+};
 
 $(document).ready(function () {
 	$('.eo-event-board').each(function() {
-			var posterboard = new EOPosterBoard( $(this), eventorganiser_posterboard.template );
-			posterboard.hook();
-			posterboard.init();
+		var id = $(this).data('board');
+		var options = window['eo_posterboard_' + id];
+		var posterboard = new EOPosterBoard( $(this), {
+			reversed: options.reversed,
+			template: options.template,
+			query: options.query,
+			loading: options.loading,
+			load_more: options.load_more,
+			url: options.url
+		});
+		posterboard.hook();
+		posterboard.init();
 	} );
 });
 

@@ -2,7 +2,7 @@
 /*
 Plugin Name: Event Organiser Posterboard
 Plugin URI: http://www.wp-event-organiser.com
-Version: 2.1.0
+Version: 3.0.0
 Description: Display events in as a responsive posterboard.
 Author: Stephen Harris
 Author URI: http://www.stephenharris.info
@@ -26,7 +26,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 */
 
-define( 'EVENT_ORGANISER_POSTERBOARD_VER', '2.1.0' );
+define( 'EVENT_ORGANISER_POSTERBOARD_VER', '3.0.0' );
 define( 'EVENT_ORGANISER_POSTERBOARD_DIR', plugin_dir_path( __FILE__ ) );
 function _eventorganiser_posterboard_set_constants(){
 	/*
@@ -65,9 +65,12 @@ add_action( 'init', 'eventorganiser_posterboard_register_scripts' );
 
 function eventorganiser_posterboard_shortcode_handler( $atts = array() ){
 
-	$defaults = array( 'filters' => '' );
+	$defaults = array( 'filters' => '', 'reversed' => false );
 	$query    = array_diff_key( (array) $atts, $defaults );
 	$atts     = shortcode_atts( $defaults, $atts );
+	$id       = uniqid();
+
+	$atts['reversed'] = ( 'false' === strtolower( $atts['reversed'] ) ? 0 : (bool) $atts['reversed'] );
 
 	$query = array_merge( array( 'posts_per_page' => 10 ), $query );
 
@@ -83,13 +86,14 @@ function eventorganiser_posterboard_shortcode_handler( $atts = array() ){
 	}
 	wp_enqueue_script( 'eo_posterboard' );
 
-	wp_localize_script( 'eo_posterboard', 'eventorganiser_posterboard',
+	wp_localize_script( 'eo_posterboard', 'eo_posterboard_' . $id,
 		array(
 			'url'       => admin_url( 'admin-ajax.php' ),
 			'loading'   => __( 'Loading...', 'event-organiser-posterboard' ),
 			'load_more' => __( 'Load more', 'event-organiser-posterboard' ),
 			'template'  => $template,
 			'query'     => $query,
+			'reversed'  => (bool)$atts['reversed']
 		)
 	);
 
@@ -177,7 +181,7 @@ function eventorganiser_posterboard_shortcode_handler( $atts = array() ){
 			.'<div class="eo-event-board-items"></div>'
 			.'<div class="eo-event-board-more"></div>'
 		.'</div>',
-		esc_attr( uniqid( 'eo-event-board' ) )
+		esc_attr( $id )
 	);
 }
 add_shortcode( 'event_board', 'eventorganiser_posterboard_shortcode_handler' );
