@@ -77,11 +77,11 @@ EOPosterBoard.prototype.fetchEvents = function() {
 		self.addEvents( events );
 
 		//If there are less than query.posts_per_page events, then we won't need this...
-		if( events.length < this.query.posts_per_page ){
+		if( events.length < self.query.posts_per_page ){
 			self.$el.find('.eo-event-board-more').hide();
 		}
 
-		self.setMoreText( this.i18n.load_more );
+		self.setMoreText( self.i18n.load_more );
 
 		var activeFilters = self.getActiveFilters();
 		if( activeFilters.length > 0 ){
