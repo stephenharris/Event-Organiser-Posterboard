@@ -260,6 +260,7 @@ function eventorganiser_posterboard_ajax_response(){
 				'event_color_light'   => eo_color_luminance( $colour, 0.3 ),
 				'event_start_day'     => eo_get_the_start( 'j' ),
 				'event_start_month'   => eo_get_the_start( 'M' ),
+				'event_start_year'    => eo_get_schedule_start( 'Y' ),
 				'event_content'       => get_the_content(),
 				'event_excerpt'       => get_the_excerpt(),
 				'event_thumbnail'     => get_the_post_thumbnail( get_the_ID(), array( '200', '200' ), array( 'class' => 'aligncenter' ) ),
@@ -270,10 +271,12 @@ function eventorganiser_posterboard_ajax_response(){
 				'event_venue_city'    => ( $venue_id ? $address['city'] : false ),
 				'event_venue_state'   => ( $venue_id ? $address['state'] : false ),
 				'event_venue_country' => ( $venue_id ? $address['country'] : false ),
+				'event_venue_address' => ( $venue_id ? $address['address'] : false ),
 				'event_venue_url'     => ( $venue_id ? eo_get_venue_link( $venue_id ) : false ),
 				'event_is_all_day'    => eo_is_all_day(),
 				'event_cat_ids'       => $categories ? array_values( wp_list_pluck( $categories, 'term_id' ) ) : array( 0 ),
 				'event_range'         => eo_get_the_start( $start_format ) . ' - ' . eo_get_the_end( $end_format ),
+				'event_register'	  => civicrm_event_organiser_get_register_links( $post_id = null ),
 			);
 
 			$event = apply_filters( 'eventorganiser_posterboard_item', $event, $event['event_id'], $event['occurrence_id'] );
